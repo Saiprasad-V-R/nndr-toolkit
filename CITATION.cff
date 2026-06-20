@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "NNDR — Non-Normal Directional Response inference toolkit"
+abstract: >-
+  A Python toolkit for inferring non-normal amplification geometry from
+  multivariate time series. Estimates a window-local linear operator, extracts a
+  two-dimensional response plane, and computes reduced diagnostics including the
+  normalized reduced non-normality ratio R = K / Kc(Delta).
+type: software
+authors:
+  - family-names: Saiprasad
+    given-names: V. R.
+  - family-names: Sornette
+    given-names: D.
+  - family-names: Troude
+    given-names: V.
+version: 0.1.0
+license: MIT
+keywords:
+  - non-normal dynamics
+  - transient amplification
+  - multivariate time series
+  - reduced response geometry
+  - directional inference
+preferred-citation:
+  type: article
+  title: "Inferring Non-Normal Amplification Geometry from Multivariate Time Series"
+  authors:
+    - family-names: Saiprasad
+      given-names: V. R.
+    - family-names: Sornette
+      given-names: D.
+    - family-names: Troude
+      given-names: V.
+  journal: "Chaos, Solitons & Fractals"
+  year: 2026
