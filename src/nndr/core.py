@@ -24,6 +24,7 @@ import numpy as np
 from .methods import METHODS
 from .reduce2d import Kc_from_Delta, compute_indices_from_Q
 from .ridge import ridge_fit_F, select_lambda_ridge, stack_VAR_pairs_from_trajectories
+from .validation import validate_operator, validate_time_series, validate_window
 
 __all__ = [
     "NNDRResult",
@@ -136,9 +137,7 @@ def fit_operator(
     np.ndarray
         The fitted ``N x N`` operator.
     """
-    X = np.asarray(X, dtype=float)
-    if X.ndim != 2:
-        raise ValueError(f"X must be 2-D (N_channels, T_samples); got shape {X.shape}")
+    X = validate_time_series(X, name="X")
     N = X.shape[0]
 
     Xstack, Ystack = stack_VAR_pairs_from_trajectories([X], x0=np.zeros(N))
@@ -169,7 +168,7 @@ def analyze_operator(A: np.ndarray, *, method: str = "M2", **method_kwargs) -> N
     **method_kwargs:
         Forwarded to the chosen method (e.g. ``iters``, ``seed`` for M2).
     """
-    A = np.asarray(A, dtype=float)
+    A = validate_operator(A, name="A")
     if method not in METHODS:
         raise ValueError(f"Unknown method {method!r}; choose from {list(METHODS)}")
     func, _ = METHODS[method]
@@ -290,10 +289,9 @@ def rolling_analyze(
         One record per window with keys ``t_start``, ``t_end``, ``t_center``
         and the diagnostics ``R``, ``Delta``, ``K``, ``support``, ``ok``.
     """
-    X = np.asarray(X, dtype=float)
+    X = validate_time_series(X, name="X")
     N, T = X.shape
-    if window > T:
-        raise ValueError(f"window ({window}) is larger than the series length ({T})")
+    validate_window(window, T, step=step)
 
     records: List[Dict[str, Any]] = []
     for start in range(0, T - window + 1, step):

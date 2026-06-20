@@ -43,6 +43,9 @@ from .reduce2d import (
 # Operator estimation
 from .ridge import ridge_fit_F, select_lambda_ridge
 
+# Input validation
+from .validation import validate_operator, validate_time_series, validate_window
+
 __version__ = "0.1.0"
 
 __all__ = [
@@ -65,4 +68,8 @@ __all__ = [
     # estimation
     "ridge_fit_F",
     "select_lambda_ridge",
+    # validation
+    "validate_time_series",
+    "validate_operator",
+    "validate_window",
 ]

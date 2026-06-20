@@ -4,6 +4,16 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Input-validation guards (`nndr.validation`) with clear, actionable error
+  messages for common mistakes: 1-D input, transposed data, NaN/Inf values,
+  windows longer than the series, and non-square operators. The guards fire
+  through the public API (`analyze`, `rolling_analyze`, `fit_operator`).
+- Continuous integration via GitHub Actions: the test suite runs on Python
+  3.9–3.12 and a wheel is built on every push and pull request.
+
 ## [0.1.0] — 2026
 
 Initial public release.
