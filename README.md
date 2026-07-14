@@ -198,9 +198,7 @@ If you use this toolkit, please cite the accompanying paper:
 }
 ```
 
-> **Placeholder:** replace `arXiv:XXXX.XXXXX` with the real arXiv identifier once the
-> preprint is posted, and add the `journal`, `volume`, `doi` fields once the paper is
-> accepted.
+
 
 ---
 
