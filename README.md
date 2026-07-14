@@ -20,13 +20,7 @@ where `Δ` is the reduced eigenvalue splitting, `K` measures reduced eigenvector
 
 ## Installation
 
-```bash
-pip install nndr-toolkit
-```
 
-> Not yet published to PyPI — until the first release, install from source (below).
-
-Or from source:
 
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
@@ -34,11 +28,6 @@ cd nndr-toolkit
 pip install -e .
 ```
 
-The core package depends only on **NumPy**. The optional benchmark/plotting tools add `pandas` and `matplotlib`:
-
-```bash
-pip install "nndr-toolkit[benchmark]"
-```
 
 The import name is `nndr`:
 
