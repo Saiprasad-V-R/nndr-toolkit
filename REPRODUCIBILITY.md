@@ -9,13 +9,7 @@ and the figure-generation workflow.
 ## Scope and design
 
 This repository is released as a **reusable calibration and analysis toolkit**
-(the `nndr` package). The empirical studies in the paper each required a
-different, dataset-specific workflow: the seizure recordings alone are ~42 GB
-and were downloaded and analysed directly on the Risks-X server, the EHG data
-needed dataset-specific handling of annotations, channels, and recordings, and
-some final figures were prepared separately. Rather than ship each large raw
-dataset, this file documents every step precisely enough to reproduce the
-analyses from the public sources.
+
 
 Three of the four empirical datasets are **public** (Icelandic EHG, CHB-MIT
 seizure EEG, Daphnet freezing of gait). The fourth (push-up inertial recording)
@@ -48,9 +42,6 @@ pip install wfdb      # EHG (PhysioNet WFDB records)
 pip install mne       # seizure EEG (EDF files)
 ```
 
-The shared figure style lives in `nndr_style.py`. **Note:** the per-figure
-scripts import it as `figure_style`, so place it on the path as `figure_style.py`
-(e.g. `cp nndr_style.py figure_style.py`) or adjust the import line.
 
 ---
 
@@ -66,8 +57,7 @@ Format: WFDB `.hea`/`.dat` signal files (physical units) plus `.atr`
 annotation files marking contractions.
 
 **Selected recordings / channels.**
-- Representative recording (Figs. 9–10): `ice045_p_1of4` (script default;
-  `ice005_p_1of3` is provided as an alternative). Channel subset `EHG9`–`EHG12`.
+- Representative recording (Figs. 9–10): `ice012_p_1of4` Channel subset `EHG9`–`EHG12`.
 - Dataset-level analysis (Fig. 11): **123 recordings from 45 subjects**, all
   available EHG channels per record.
 
@@ -91,9 +81,6 @@ analysis, high-activity windows = top 20% of the smoothed envelope within each
 recording; baseline = bottom 50% (Eq. 67). Effect sizes: per-recording Spearman
 correlation (Eq. 69) and Cliff's delta; each subject summarized by its median.
 
-**Scripts.**
-- [`ehg_nonnormal_rolling.py`](reproducibility/ehg_nonnormal_rolling.py) → Figs. 9 & 10.
-- [`ehg_final_dataset_level.py`](reproducibility/ehg_final_dataset_level.py) → Fig. 11.
 
 ---
 
@@ -125,11 +112,6 @@ smoothed absolute amplitude on the onset-aligned grid. Onset-aligned curves are
 summarized within each patient before pooling, so patients with many seizures do
 not dominate the cohort median.
 
-**Scripts.**
-- [`fig11_seizure_single_window_end_patched.py`](reproducibility/fig11_seizure_single_window_end_patched.py)
-  → Fig. 12. (The script reads a pre-computed rolling-diagnostics CSV and the
-  EDF; the CSV is produced by the same rolling analysis.)
-- Cohort/pooled script (Fig. 13) — *to be added.*
 
 ---
 
@@ -159,12 +141,6 @@ the onset interval vs. matched baseline windows taken outside the freezing
 episode (a second post-episode rise in `R` is read as gait re-initiation, not
 onset, and is excluded from the onset-vs-baseline comparison).
 
-**Scripts.**
-- [`fig13_fog_representative.py`](reproducibility/fig13_fog_representative.py) → Fig. 14.
-  Replots from two exported CSVs
-  (`..._plotted_acceleration_native.csv`, `..._plotted_metrics_rolling.csv`); no
-  recomputation.
-- Dataset-level onset-vs-baseline script (Fig. 15) — *to be added.*
 
 ---
 
