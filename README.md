@@ -24,6 +24,8 @@ where `Δ` is the reduced eigenvalue splitting, `K` measures reduced eigenvector
 pip install nndr-toolkit
 ```
 
+> Not yet published to PyPI — until the first release, install from source (below).
+
 Or from source:
 
 ```bash
@@ -113,7 +115,7 @@ print(principal_angle_deg(res2.Q, res3.Q), "degrees")
 
 - **`Delta` (Δ) — reduced eigenvalue splitting.** `|(λ₁ − λ₂)/(λ₁ + λ₂)|` of the reduced 2×2 operator. Near 0 means a nearly degenerate reduced spectrum; near 1 means strongly separated eigenvalues.
 - **`K` — reduced non-normality index.** Zero for an orthogonal reduced eigenbasis; grows as the two reduced eigenvectors become more parallel.
-- **`Kc(Δ)` — reduced threshold.** The amount of non-orthogonality needed, given `Δ`, to reach the transient-amplification threshold. Derived in Supplementary Note 2 of the paper.
+- **`Kc(Δ)` — reduced threshold.** The amount of non-orthogonality needed, given `Δ`, to reach the transient-amplification threshold. Derived in Appendix A and Appendix B of the paper.
 - **`R = K / Kc(Δ)` — normalized ratio.** A dimensionless control parameter. `R = 1` is the threshold; `R > 1` is the amplification-prone regime. **`R` is a parameter, not a phenomenon** — it controls whether the reduced dynamics can transiently amplify.
 - **`support` — reaction-direction support.** `‖r̂‖₁ / (√N ‖r̂‖₂)`, in `(0, 1]`. Near 1 means the reaction direction is spread across many channels; small values mean it is concentrated on a few.
 
@@ -152,6 +154,18 @@ See [`examples/`](examples/) for runnable scripts.
 
 ---
 
+## Reproducing the paper's empirical figures
+
+The four empirical applications (uterine EHG, seizure EEG, freezing of gait, and
+the push-up recording) each use a dataset-specific workflow. Data sources,
+selected recordings, channels, preprocessing, window parameters, and the
+figure-generation scripts are documented in
+[`REPRODUCIBILITY.md`](REPRODUCIBILITY.md). The per-figure scripts live in
+[`reproducibility/`](reproducibility/); the original push-up recording is under
+[`data/pushup/`](data/pushup/).
+
+---
+
 ## API overview
 
 ```python
@@ -173,15 +187,20 @@ Lower-level building blocks live in `nndr.methods`, `nndr.reduce2d`, `nndr.ridge
 If you use this toolkit, please cite the accompanying paper:
 
 ```bibtex
-@article{nndr,
-  title   = {Inferring Non-Normal Amplification Geometry from Multivariate Time Series},
-  author  = {Saiprasad, V. R. and Sornette, D. and Troude, V.},
-  journal = {Chaos, Solitons \& Fractals},
-  year    = {2026}
+@article{saiprasad2026nndr,
+  title         = {Inferring Non-Normal Amplification Geometry from Multivariate Time Series},
+  author        = {Saiprasad, V. R. and Troude, V. and Sornette, D.},
+  year          = {2026},
+  note          = {Preprint. V. R. Saiprasad and V. Troude contributed equally.},
+  eprint        = {arXiv:XXXX.XXXXX},
+  archivePrefix = {arXiv},
+  primaryClass  = {nlin.CD}
 }
 ```
 
-> Update the BibTeX entry with the final volume/DOI once published.
+> **Placeholder:** replace `arXiv:XXXX.XXXXX` with the real arXiv identifier once the
+> preprint is posted, and add the `journal`, `volume`, `doi` fields once the paper is
+> accepted.
 
 ---
 
