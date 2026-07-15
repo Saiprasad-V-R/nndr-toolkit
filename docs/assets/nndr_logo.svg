@@ -1,0 +1,51 @@
+<svg width="660" height="190" viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NNDR — Non-Normal Directional Response">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c2340"/>
+      <stop offset="1" stop-color="#143b63"/>
+    </linearGradient>
+  </defs>
+
+  <!-- banner -->
+  <rect x="0" y="0" width="660" height="190" rx="22" fill="url(#bg)"/>
+
+  <!-- ================= icon ================= -->
+  <!-- axes -->
+  <g stroke="#ffffff" stroke-opacity="0.22" stroke-width="2" stroke-linecap="round">
+    <line x1="70" y1="140" x2="170" y2="140"/>
+    <line x1="70" y1="140" x2="70" y2="42"/>
+  </g>
+
+  <!-- faint transient bump behind the vectors -->
+  <path d="M52 128 C 74 128, 82 66, 104 60 C 126 54, 138 112, 160 118"
+        fill="none" stroke="#e8a13a" stroke-opacity="0.28" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- input direction n̂ (blue) -->
+  <line x1="70" y1="140" x2="120" y2="60" stroke="#56b4e9" stroke-width="4.5" stroke-linecap="round"/>
+  <polygon points="120,60 109.4,67.5 117.9,72.8" fill="#56b4e9"/>
+
+  <!-- response direction r̂ (green) -->
+  <line x1="70" y1="140" x2="155" y2="102" stroke="#34c58c" stroke-width="4.5" stroke-linecap="round"/>
+  <polygon points="155,102 142,102.3 146,111.5" fill="#34c58c"/>
+
+  <!-- routing / amplification arc n̂ -> r̂ (orange) -->
+  <path d="M116 66 C 140 74, 152 84, 150 104" fill="none" stroke="#f0912e" stroke-width="3.5" stroke-linecap="round"/>
+  <polygon points="150,104 146.2,91.6 156.2,92.6" fill="#f0912e"/>
+
+  <!-- direction labels -->
+  <text x="124" y="52" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-style="italic" fill="#cfe3f5">n̂</text>
+  <text x="162" y="106" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-style="italic" fill="#c9f0dd">r̂</text>
+
+  <!-- ================= wordmark ================= -->
+  <text x="208" y="92" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="58" font-weight="700" letter-spacing="3" fill="#ffffff">NNDR</text>
+
+  <!-- tri-colour accent bar (M1 / M2 / M3) -->
+  <g stroke-width="4" stroke-linecap="round">
+    <line x1="210" y1="107" x2="252" y2="107" stroke="#56b4e9"/>
+    <line x1="258" y1="107" x2="300" y2="107" stroke="#f0912e"/>
+    <line x1="306" y1="107" x2="348" y2="107" stroke="#34c58c"/>
+  </g>
+
+  <text x="210" y="135" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" font-weight="600" fill="#a9c0d6">Non-Normal Directional Response</text>
+  <text x="210" y="158" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#7f97ad">inference of amplification geometry from multivariate time series</text>
+</svg>
