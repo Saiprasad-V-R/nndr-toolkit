@@ -110,8 +110,6 @@ files marking contractions.
 - Read WFDB signals with `physical=True` (already calibrated). **Do not** apply
   the 131.068 factor used for raw `.mat` files.
 - Convert mV → µV.
-- Crop the initial contaminated segment (`INITIAL_CROP_SEC = 200 s`) and edge
-  effects (`EDGE_CROP_SEC = 60 s`); despike; detrend.
 - Bandpass filter to the uterine band **0.08–2.0 Hz**.
 - Downsample to **10 Hz**.
 
