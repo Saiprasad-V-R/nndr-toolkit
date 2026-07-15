@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="docs/assets/nndr_logo.svg" alt="NNDR — Non-Normal Directional Response" width="560">
+</p>
+
+
 # NNDR — Non-Normal Directional Response inference
 **V. R. Saiprasad, V. Troude, D. Sornette**
 
