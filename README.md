@@ -1,10 +1,10 @@
 # NNDR — Non-Normal Directional Response inference
-
+**V. R. Saiprasad, V. Troude, D. Sornette**
 
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**V. R. Saiprasad, V. Troude, D. Sornette**
+
 
 A Python toolkit for inferring **non-normal amplification geometry** from multivariate time series.
 
