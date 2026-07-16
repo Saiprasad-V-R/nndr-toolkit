@@ -14,7 +14,7 @@ authors:
     given-names: D.
   - family-names: Troude
     given-names: V.
-version: 0.1.0
+version: 1.0.0
 license: MIT
 keywords:
   - non-normal dynamics
