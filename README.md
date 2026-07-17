@@ -188,7 +188,7 @@ If you use this toolkit, please cite the accompanying paper:
   author        = {Saiprasad, V. R. and Troude, V. and Sornette, D.},
   year          = {2026},
   note          = {Preprint. V. R. Saiprasad and V. Troude contributed equally.},
-  eprint        = {arXiv:XXXX.XXXXX},
+  eprint        = {2607.14786},
   archivePrefix = {arXiv},
   primaryClass  = {nlin.CD}
 }
