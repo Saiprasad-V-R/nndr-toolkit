@@ -10,11 +10,14 @@ type: software
 authors:
   - family-names: Saiprasad
     given-names: V. R.
-  - family-names: Sornette
-    given-names: D.
   - family-names: Troude
     given-names: V.
+  - family-names: Sornette
+    given-names: D.
 version: 1.0.0
+date-released: 2026-07-16
+doi: 10.5281/zenodo.21386107
+repository-code: "https://github.com/Saiprasad-V-R/nndr-toolkit"
 license: MIT
 keywords:
   - non-normal dynamics
@@ -23,14 +26,20 @@ keywords:
   - reduced response geometry
   - directional inference
 preferred-citation:
+  # Preprint. Replace with journal/volume/doi on acceptance.
   type: article
   title: "Inferring Non-Normal Amplification Geometry from Multivariate Time Series"
   authors:
     - family-names: Saiprasad
       given-names: V. R.
-    - family-names: Sornette
-      given-names: D.
     - family-names: Troude
       given-names: V.
-  journal: "Chaos, Solitons & Fractals"
+    - family-names: Sornette
+      given-names: D.
+  notes: "Preprint. V. R. Saiprasad and V. Troude contributed equally."
+  identifiers:
+    - type: other
+      value: "arXiv:2607.14786"
+      description: "arXiv preprint identifier"
+  url: "https://arxiv.org/abs/2607.14786"
   year: 2026
