@@ -13,7 +13,9 @@ python reproducibility/seizure/representative/scripts/plot_figure12_chb01_03_Rsi
 
 Outputs are in `representative/figures/`. PDFs are vector plots; typography may differ slightly with platform font availability. Reference originals are in `reference_figures/`. The plots use 201 endpoints -160 to +240 s, with 2 s steps, 40 s windows; the axis extends to +250 s. The EEG waveform also ends at +240 s. No extrapolation.
 
-## Independent EDF reconstruction and parity audit (not yet verified on the original EDF)
+## Independent EDF reconstruction and parity audit (verified on the original EDF)
+
+The macOS audit passed all nine numerical comparisons with zero finite-mask mismatches. See [validation/parity_report.json](validation/parity_report.json) for the measured errors and recording checksum.
 
 ```sh
 python -W error::RuntimeWarning reproducibility/seizure/representative/evaluate_edf.py --edf ~/Desktop/nndr-seizure-data/chb01_03.edf --out ~/Desktop/nndr-seizure-reference-audit
