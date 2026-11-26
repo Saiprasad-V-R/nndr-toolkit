@@ -3,8 +3,7 @@
 A toolkit for inferring non-normal amplification geometry from multivariate
 time series. Estimate a local linear operator, extract a two-dimensional
 response plane, and compute reduced diagnostics: the eigenvalue splitting
-``Delta``, the non-normality index ``K``, and the normalized reduced
-non-normality ratio ``R = K / Kc(Delta)``.
+``Delta``, the non-normality index ``K``, and the revised amplification ratios ``R_A`` and ``R_sigma``.
 
 Quick start
 -----------
@@ -47,7 +46,7 @@ from .ridge import ridge_fit_F, select_lambda_ridge
 # Input validation
 from .validation import validate_operator, validate_time_series, validate_window
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 __all__ = [
     "__version__",
