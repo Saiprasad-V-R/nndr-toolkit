@@ -22,7 +22,7 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 
 from .methods import METHODS
-from .reduce2d import Kc_from_Delta, compute_indices_from_Q
+from .reduce2d import compute_indices_from_Q
 from .ridge import ridge_fit_F, select_lambda_ridge, stack_VAR_pairs_from_trajectories
 from .validation import validate_operator, validate_time_series, validate_window
 
@@ -42,15 +42,14 @@ class NNDRResult:
     Attributes
     ----------
     R:
-        Normalized reduced non-normality ratio ``R = K / Kc(Delta)``. Values
-        below 1 lie below the reduced transient-amplification threshold;
-        values above 1 lie above it.
+        Selected ratio: corrected R_A by default, or explicitly requested legacy ratio.
+        R_A and R_sigma are separately available as properties.
     Delta:
-        Reduced eigenvalue splitting ``|(lam1 - lam2) / (lam1 + lam2)|``.
+        Rate splitting for real pairs, beta for complex pairs (legacy: multiplier splitting).
     K:
         Reduced non-normality index.
     Kc:
-        The reduced threshold ``Kc(Delta)``.
+        Threshold corresponding to the selected R convention.
     support:
         Reaction-direction support in ``(0, 1]``; values near 1 mean the
         reaction direction is spread across many channels.
@@ -61,8 +60,7 @@ class NNDRResult:
     method:
         Which extraction method was used (``"M1"``, ``"M2"`` or ``"M3"``).
     ok:
-        ``True`` if the reduced operator is non-degenerate (``Delta`` and
-        ``Kc`` are meaningful).
+        Admissibility of R_A by default; historical flag in legacy mode.
     Fhat:
         The fitted ``N x N`` operator (``None`` if an operator was supplied
         directly).
@@ -83,12 +81,22 @@ class NNDRResult:
     ok: bool
     Fhat: Optional[np.ndarray] = None
     extra: Dict[str, Any] = field(default_factory=dict)
+    diagnostics: Dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def R_A(self) -> float:
+        return float(self.diagnostics.get("R_A", np.nan))
+
+    @property
+    def R_sigma(self) -> float:
+        return float(self.diagnostics.get("R_sigma", np.nan))
 
     def summary(self) -> str:
         """One-line human-readable summary of the key diagnostics."""
-        regime = "above" if self.R > 1 else "below"
+        regime = ("inadmissible" if not self.ok or np.isnan(self.R) else
+                  "above" if self.R > 1 else "below" if self.R < 1 else "at")
         return (
-            f"[{self.method}] R={self.R:.3f} ({regime} threshold), "
+            f"[{self.method}] R={self.R:.3f} ({regime}; {self.diagnostics.get('threshold', 'unspecified')}), "
             f"Delta={self.Delta:.3f}, K={self.K:.3f}, support={self.support:.3f}"
         )
 
@@ -156,7 +164,8 @@ def fit_operator(
     return Fhat
 
 
-def analyze_operator(A: np.ndarray, *, method: str = "M2", **method_kwargs) -> NNDRResult:
+def analyze_operator(A: np.ndarray, *, method: str = "M2", dt: float = 1.0,
+                     threshold: str = "rates", **method_kwargs) -> NNDRResult:
     """Run NNDR diagnostics on a known operator ``A`` (no estimation step).
 
     Parameters
@@ -165,6 +174,8 @@ def analyze_operator(A: np.ndarray, *, method: str = "M2", **method_kwargs) -> N
         An ``N x N`` operator.
     method:
         Plane-extraction method: ``"M1"``, ``"M2"`` (default) or ``"M3"``.
+    dt, threshold:
+        Sample interval and ratio convention (rates or legacy).
     **method_kwargs:
         Forwarded to the chosen method (e.g. ``iters``, ``seed`` for M2).
     """
@@ -175,7 +186,7 @@ def analyze_operator(A: np.ndarray, *, method: str = "M2", **method_kwargs) -> N
     out = func(A, **method_kwargs)
 
     Q = out["Q"]
-    idx = compute_indices_from_Q(A, Q)
+    idx = compute_indices_from_Q(A, Q, dt=dt, threshold=threshold)
     r_hat, n_hat = Q[:, 0], Q[:, 1]
 
     extra = {k: v for k, v in out.items()
@@ -185,7 +196,7 @@ def analyze_operator(A: np.ndarray, *, method: str = "M2", **method_kwargs) -> N
         R=float(idx["KKc"]),
         Delta=float(idx["Delta"]),
         K=float(idx["K"]),
-        Kc=Kc_from_Delta(float(idx["Delta"])),
+        Kc=float(idx["Kc"]),
         support=_reaction_support(r_hat),
         Q=Q,
         r_hat=r_hat,
@@ -194,6 +205,7 @@ def analyze_operator(A: np.ndarray, *, method: str = "M2", **method_kwargs) -> N
         ok=bool(idx["okG"]),
         Fhat=None,
         extra=extra,
+        diagnostics=idx,
     )
 
 
@@ -207,6 +219,8 @@ def analyze(
     seed: int = 0,
     shrinkage: float = 0.0,
     iters: int = 250,
+    dt: float = 1.0,
+    threshold: str = "rates",
 ) -> NNDRResult:
     """Estimate the local operator from ``X`` and compute NNDR diagnostics.
 
@@ -244,7 +258,7 @@ def analyze(
     method_kwargs: Dict[str, Any] = {}
     if method == "M2":
         method_kwargs = {"iters": iters, "seed": seed}
-    res = analyze_operator(Fhat, method=method, **method_kwargs)
+    res = analyze_operator(Fhat, method=method, dt=dt, threshold=threshold, **method_kwargs)
     res.Fhat = Fhat
     return res
 
@@ -261,6 +275,8 @@ def rolling_analyze(
     seed: int = 0,
     iters: int = 250,
     skip_degenerate: bool = True,
+    dt: float = 1.0,
+    threshold: str = "rates",
 ) -> List[Dict[str, Any]]:
     """Slide a window across ``X`` and run NNDR in each window.
 
@@ -299,7 +315,7 @@ def rolling_analyze(
         Xw = X[:, start:end]
         res = analyze(
             Xw, method=method, lam=lam, lambdas=lambdas,
-            shrinkage=shrinkage, seed=seed, iters=iters,
+            shrinkage=shrinkage, seed=seed, iters=iters, dt=dt, threshold=threshold,
         )
         records.append({
             "t_start": start,
@@ -310,5 +326,10 @@ def rolling_analyze(
             "K": res.K,
             "support": res.support,
             "ok": res.ok,
+            **{k: res.diagnostics[k] for k in (
+                "R_A", "R_sigma", "Kc_A", "Kc_sigma", "Delta_rate", "beta",
+                "rhoF", "sigmaF", "rhoGamma", "sigmaGamma", "dF", "spectrum_type",
+                "rate_admissible", "rate_status", "stable_full", "stable_reduced",
+                "stable_amplifying", "dt", "threshold")},
         })
     return records

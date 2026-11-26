@@ -45,6 +45,8 @@ class BenchConfig:
     seed_opt_est: int = 0
 
     iters_opt: int = 250
+    dt: float = 1.0
+    threshold: str = "rates"
 
 
 def run_benchmark(
@@ -94,7 +96,7 @@ def run_benchmark(
                     # Reference: Method 2 on the TRUE F
                     out_ref = method2_optimization(F, iters=bc.iters_opt, seed=bc.seed_opt_reference)
                     QT = out_ref["Q"]
-                    idx_true = compute_indices_from_Q(F, QT)
+                    idx_true = compute_indices_from_Q(F, QT, dt=bc.dt, threshold=bc.threshold)
                     KKc_TRUE = float(idx_true["KKc"])
                     Delta_TRUE = float(idx_true["Delta"])
 
@@ -125,7 +127,7 @@ def run_benchmark(
 
                     for outm in methods:
                         Qm = outm["Q"]
-                        idx_est = compute_indices_from_Q(Fhat, Qm)
+                        idx_est = compute_indices_from_Q(Fhat, Qm, dt=bc.dt, threshold=bc.threshold)
 
                         angle = principal_angle_deg(QT, Qm)
                         c_plane, _, _ = best_plane_corr(Qm, Xte, mte)
@@ -140,6 +142,10 @@ def run_benchmark(
                             "Delta_TRUE": Delta_TRUE,
                             "method": outm["name"],
                             "KKc_est": float(idx_est["KKc"]),
+                            "R_A_true": idx_true["R_A"], "R_A_est": idx_est["R_A"],
+                            "R_sigma_true": idx_true["R_sigma"], "R_sigma_est": idx_est["R_sigma"],
+                            "rate_admissible_est": idx_est["rate_admissible"],
+                            "threshold": bc.threshold, "dt": bc.dt,
                             "Delta_est": float(idx_est["Delta"]),
                             "angle_deg": float(angle),
                             "corr_plane": float(c_plane),

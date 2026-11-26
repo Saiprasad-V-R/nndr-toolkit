@@ -41,7 +41,7 @@ def test_compute_indices_identity_plane():
     a, b, q = 0.6, 0.2, 2.0
     A = np.array([[a, q * (a - b)], [0.0, b]])
     Q = np.eye(2)
-    idx = compute_indices_from_Q(A, Q)
+    idx = compute_indices_from_Q(A, Q, threshold="legacy")
     assert idx["K"] == pytest.approx(q, abs=1e-6)
     assert idx["KKc"] == pytest.approx(q / Kc_from_Delta(idx["Delta"]), rel=1e-6)
     assert idx["okG"] in (True, False)

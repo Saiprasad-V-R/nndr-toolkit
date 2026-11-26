@@ -15,7 +15,20 @@ A Python toolkit for inferring **non-normal amplification geometry** from multiv
 
 Stable high-dimensional systems can still produce large finite-time responses when their local dynamics are *non-normal*: eigenvalues govern long-term decay, but non-orthogonal eigenvectors can route perturbations into directions that transiently amplify. NNDR estimates a window-local linear operator from data, extracts the two-dimensional plane that organizes this response, and reports a small set of interpretable diagnostics.
 
-The central diagnostic is the **normalized reduced non-normality ratio**
+## Threshold revision (real and oscillatory reduced dynamics)
+
+The revised API reports two distinct ratios: `R_A` (continuous-time delayed
+variance-response criterion, using the real principal logarithm of Gamma)
+and `R_sigma` (exact discrete one-step criterion, valid for every stable
+real 2x2 reduced map). For stable Gamma, `R_sigma > 1` iff its largest
+singular value exceeds one. `R_A` is NaN when the generator is inadmissible.
+The default `result.R` and `KKc` now refer to `R_A`. Pass `dt` in your
+sampling units; it defaults to 1.0. For original results only, explicitly
+pass `threshold="legacy"` (or `BenchConfig(threshold="legacy")`). The
+historical definition below is retained for reference, not for new inference.
+See [threshold migration notes](THRESHOLD_MIGRATION.md).
+
+The original diagnostic was the **normalized reduced non-normality ratio**
 
 ```
 R = K / Kc(Δ)
@@ -56,7 +69,8 @@ X = np.load("my_recording.npy")     # shape (N_channels, T_samples)
 
 result = analyze(X, method="M2")
 print(result.summary())
-# [M2] R=1.84 (above threshold), Delta=0.31, K=3.12, support=0.74
+# R now refers to the rate-based R_A, unless legacy mode is selected.
+print(result.R_A, result.R_sigma)
 
 print(result.R)        # normalized reduced non-normality ratio
 print(result.Delta)    # reduced eigenvalue splitting
@@ -109,10 +123,10 @@ print(principal_angle_deg(res2.Q, res3.Q), "degrees")
 
 ## What the diagnostics mean
 
-- **`Delta` (Δ) — reduced eigenvalue splitting.** `|(λ₁ − λ₂)/(λ₁ + λ₂)|` of the reduced 2×2 operator. Near 0 means a nearly degenerate reduced spectrum; near 1 means strongly separated eigenvalues.
+- **`Delta` (Δ).** Rate splitting for real pairs, or frequency-to-decay ratio beta for complex pairs. Legacy mode uses multiplier splitting.
 - **`K` — reduced non-normality index.** Zero for an orthogonal reduced eigenbasis; grows as the two reduced eigenvectors become more parallel.
-- **`Kc(Δ)` — reduced threshold.** The amount of non-orthogonality needed, given `Δ`, to reach the transient-amplification threshold. Derived in Appendix A and Appendix B of the paper.
-- **`R = K / Kc(Δ)` — normalized ratio.** A dimensionless control parameter. `R = 1` is the threshold; `R > 1` is the amplification-prone regime. **`R` is a parameter, not a phenomenon** — it controls whether the reduced dynamics can transiently amplify.
+- **`Kc` — selected threshold.** By default the rate-based variance-response threshold, with separate real and complex formulas.
+- **`R_A` and `R_sigma`.** Separate variance-response and exact one-step ratios. Each has its own threshold at one. The default `R` is `R_A`; inadmissible ratios are NaN.
 - **`support` — reaction-direction support.** `‖r̂‖₁ / (√N ‖r̂‖₂)`, in `(0, 1]`. Near 1 means the reaction direction is spread across many channels; small values mean it is concentrated on a few.
 
 ---

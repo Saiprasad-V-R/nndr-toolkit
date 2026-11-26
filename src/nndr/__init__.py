@@ -38,6 +38,7 @@ from .reduce2d import (
     Kc_from_Delta,
     compute_indices_from_Q,
     twoD_metrics_from_Gamma,
+    threshold_diagnostics,
 )
 
 # Operator estimation
@@ -64,6 +65,7 @@ __all__ = [
     # diagnostics
     "Kc_from_Delta",
     "twoD_metrics_from_Gamma",
+    "threshold_diagnostics",
     "compute_indices_from_Q",
     # estimation
     "ridge_fit_F",
