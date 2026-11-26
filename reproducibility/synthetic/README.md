@@ -42,3 +42,7 @@ The parameter grid uses gamma1=1 with gamma2 in [1.02, 1.1, 1.5, 2, 4, 10, 100],
 ## Interpretation
 
 R_A and R_sigma are distinct. The former detects a delayed increasing interval of the isotropic variance-response kernel, not necessarily a peak above its initial value. The latter detects one-step optimal Euclidean growth for a stable map. Neither establishes physical non-normality from an estimated operator. This experiment validates the exact reduced mathematical diagnostics; finite-data recovery, high-dimensional plane extraction and empirical model adequacy require separate experiments.
+
+## Next experiment
+
+See [high-dimensional stochastic recovery](README_recovery.md) for the finite-data benchmark.
