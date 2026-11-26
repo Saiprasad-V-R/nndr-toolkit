@@ -4,6 +4,18 @@ Companion to *Inferring Non-Normal Amplification Geometry from Multivariate Time
 
 This repository is a reusable Python analysis package, with two self-contained synthetic validation experiments and one representative seizure EEG reproduction. The remaining empirical applications are documented below as methodological references, not as complete, independently reproduced revised pipelines. The original push-up recording is included. Large public datasets are not bundled.
 
+## Software version
+
+These instructions accompany NNDR 2.0.0. For a fixed release snapshot:
+
+```bash
+git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
+cd nndr-toolkit
+git switch --detach 2.0.0
+```
+
+The [historical implementation](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) is retained separately. For new analyses, use the revised release and record the software commit, preprocessing settings and random seeds.
+
 ## Environment
 
 Run commands from the repository root in an activated Python environment (Python >= 3.9):

@@ -6,13 +6,34 @@
 
 **V. R. Saiprasad, V. Troude, D. Sornette**
 
-[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Release 2.0.0](https://img.shields.io/badge/release-2.0.0-blue.svg)](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/2.0.0) [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 NNDR is a Python toolkit for inferring non-normal amplification geometry from multivariate time series. It estimates a local linear predictor, extracts a two-dimensional response plane and quantifies its spectral and directional geometry. A stable spectrum can coexist with transient growth; the toolkit reports the revised variance-response criterion `R_A` and the exact discrete one-step criterion `R_sigma` separately.
 
+## Current release: NNDR 2.0.0
+
+The default `main` branch contains the current revised implementation and documentation. Use the fixed [2.0.0 release](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/2.0.0) for reproducible research and new scientific analyses. The [original v1.0.0 snapshot](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) remains available for historical results; its threshold conventions differ. See the [migration guide](THRESHOLD_MIGRATION.md).
+
 ## Installation
 
-Python 3.9 or newer. From the repository root on the revised branch:
+Python 3.9 or newer and Git are required for the following installation. To install the published package without cloning the repository, create and activate a virtual environment, then run:
+
+```bash
+python -m pip install "nndr-toolkit[dev] @ git+https://github.com/Saiprasad-V-R/nndr-toolkit.git@2.0.0"
+python -c "import nndr; print(nndr.__version__)"
+```
+
+The expected version is `2.0.0`. The distribution is `nndr-toolkit`; the import is `nndr`.
+
+To obtain the tutorials, validation scripts and reference figures, clone the repository:
+
+```bash
+git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
+cd nndr-toolkit
+git switch --detach 2.0.0
+```
+
+Omit the detached checkout to work with the current `main` branch instead. From the repository root:
 
 ```bash
 python -m venv .venv
@@ -20,7 +41,7 @@ source .venv/bin/activate
 python -m pip install -e '.[dev]'
 ```
 
-On Windows use `.venv\Scripts\activate` instead. For the minimal NumPy-only core, use `python -m pip install -e .`; matrix exponential/logarithm, surrogate and statistical functions require SciPy. The `dev` extra installs SciPy, pandas, Matplotlib and pytest. For an existing environment, do not recreate it. See the [installation guide](docs/quickstart.md) for the validated macOS constraints. A PyPI release is not assumed here.
+On Windows use `.venv\Scripts\activate` instead. For the minimal NumPy-only core, use `python -m pip install -e .`; matrix exponential/logarithm, surrogate and statistical functions require SciPy. The `dev` extra installs SciPy, pandas, Matplotlib and pytest. For an existing environment, do not recreate it. See the [installation guide](docs/quickstart.md) for the validated macOS constraints. The released package is available through GitHub; PyPI installation is not required.
 
 ## Quick start
 
@@ -67,6 +88,18 @@ python examples/tutorial_nndr.py
 | [Reproducibility](reproducibility/README.md) | Two synthetic validations and representative EEG reproduction; other dataset methods |
 | [Threshold migration](THRESHOLD_MIGRATION.md) | Historical conventions and revised diagnostics |
 
+## What is included in 2.0.0
+
+| Component | Capability |
+|---|---|
+| Estimation | Observed adjacent-pair fitting, relative ridge and trace-preserving shrinkage |
+| Geometry | M1, M2 and directed M3; plane and observable alignment |
+| Amplification | Corrected real/complex variance-response and discrete one-step criteria |
+| Time series | Fixed and rolling-window analysis |
+| Model diagnostics | Closure, prediction skill, lag consistency, residual tests and gains |
+| Statistical controls | Normal surrogates, phase randomization, Monte Carlo tests and block bootstrap |
+| Reproducibility | Two synthetic benchmarks and one validated representative EEG example |
+
 ## Methods and interpretation
 
 M1 is an eigenbasis-SVD baseline; M2 uses alternating directed-coupling optimization; M3 extracts a commutator plane and orders its response/input directions. M2 and M3 agreement checks sensitivity to the extraction rule, not the accuracy of their common fitted operator. M2 is not a certified global optimizer.
@@ -83,6 +116,22 @@ python reproducibility/synthetic/validate_recovery.py --out results/synthetic/re
 ```
 
 The synthetic experiments are new validation examples for the revised framework, not exact regenerations of all original preprint figures. The [representative EEG example](reproducibility/seizure/representative/README.md) includes frozen plotting data and an EDF numerical parity audit. MNE is needed only for the EDF route. Raw EEG data are downloaded from PhysioNet rather than bundled. The original [push-up recording](data/pushup/) is included; no full revised push-up or cohort pipeline is claimed.
+
+## Reference validation figures
+
+These are new validation experiments for the revised mathematical framework. The [reproducibility guide](reproducibility/README.md) provides the commands, settings and interpretation.
+
+### Real and complex thresholds
+
+[![Threshold validation](reproducibility/synthetic/figures/threshold_ground_truth.png)](reproducibility/synthetic/figures/threshold_ground_truth.svg)
+
+### High-dimensional finite-data recovery
+
+[![Recovery benchmark](reproducibility/synthetic/figures/recovery_benchmark.png)](reproducibility/synthetic/figures/recovery_benchmark.svg)
+
+### Representative experimental example
+
+The representative seizure EEG workflow includes the [main manuscript figure](reproducibility/seizure/representative/reference_figures/figure12_chb01_03_RA_main.pdf), [supplementary figure](reproducibility/seizure/representative/reference_figures/figure12_chb01_03_Rsigma_supp.pdf), [numerical parity report](reproducibility/seizure/representative/validation/parity_report.json) and [reproduction instructions](reproducibility/seizure/representative/README.md).
 
 ## Citation
 

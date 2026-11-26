@@ -4,12 +4,18 @@
 
 ## Install
 
-Clone the repository and select the revised branch while the revision is under review. After release, use the corresponding release tag instead.
+NNDR 2.0.0 is the current published release. To install just the package, with the extras required for the examples, run the following in an activated virtual environment:
+
+```bash
+python -m pip install "nndr-toolkit[dev] @ git+https://github.com/Saiprasad-V-R/nndr-toolkit.git@2.0.0"
+```
+
+To obtain the repository tutorials and reference data, clone the repository and check out the fixed release tag, as shown below. Omit the detached checkout if you want the current default `main` branch. The [historical v1.0.0 snapshot](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) uses different conventions.
 
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
 cd nndr-toolkit
-git switch revision/complex-thresholds
+git switch --detach 2.0.0
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[dev]'
