@@ -103,3 +103,9 @@ from .estimation import __all__ as _estimation_exports
 from .dynamics import __all__ as _dynamics_exports
 from .adequacy import __all__ as _adequacy_exports
 __all__ += _estimation_exports + _dynamics_exports + _adequacy_exports
+
+# Statistical validation and surrogate controls.
+from .statistics import (portmanteau_test, squared_residual_test, variance_matched_surrogate,
+                         surrogate_test, block_bootstrap, bootstrap_confidence_interval, unwrap_rates)
+from .statistics import __all__ as _statistics_exports
+__all__ += _statistics_exports

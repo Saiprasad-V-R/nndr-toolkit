@@ -223,3 +223,7 @@ See the [scientific API reference](docs/scientific_api.md) for individual diagno
 ## Scale-aware estimation and model adequacy
 
 Use `analyze(X, lam_rel=0.003, method="M3", dt=...)` for relative ridge fitting of observed adjacent pairs. The ridge value is an example, not a universal calibrated parameter. See [estimation and adequacy](docs/estimation_adequacy.md) for the remaining assumptions and diagnostics.
+
+## Statistical controls
+
+See [statistical controls](docs/statistical_controls.md) for residual tests, normal nulls and bootstrap intervals. These functions do not define a calibrated adequacy filter. Install the SciPy-containing `synthetic` or `dev` extra.
