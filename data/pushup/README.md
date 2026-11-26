@@ -29,9 +29,7 @@ calibration is applied.
 ## How it is used
 
 This recording is the input for the push-up analysis (Figure 16 of the paper).
-See [`../../REPRODUCIBILITY.md`](../../REPRODUCIBILITY.md) (Section 4) for the full
-preprocessing, per-class fitting, cycle-removal robustness check, and timing
-test. The analysis code is available from the authors on request.
+See [the consolidated reproducibility guide](../../reproducibility/README.md) for the revised methodology and scope. The analysis code is available from the authors on request.
 
 ## License / use
 
