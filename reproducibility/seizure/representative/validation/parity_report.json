@@ -1,0 +1,107 @@
+{
+  "status": "parity_pass",
+  "channels": [
+    "FP1-F7",
+    "F7-T7",
+    "T7-P7",
+    "P7-O1",
+    "FP1-F3",
+    "F3-C3",
+    "C3-P3",
+    "P3-O1",
+    "FP2-F4",
+    "F4-C4",
+    "C4-P4",
+    "P4-O2",
+    "FP2-F8",
+    "F8-T8",
+    "T8-P8-0",
+    "P8-O2"
+  ],
+  "edf_sha256": "4c4a95a9b4331aeaadadd538763eb2e735950d9aa615b85ee6246c784be8ae90",
+  "waveform_max_abs_error_uV": 1.2814638239433407e-11,
+  "metrics": {
+    "rho_F": {
+      "reference_finite": 201,
+      "trial_finite": 201,
+      "mask_mismatch": 0,
+      "common": 201,
+      "max_abs_error": 5.1514348342607263e-14,
+      "median_abs_error": 3.4416913763379853e-15,
+      "parity": true
+    },
+    "RA_M2_raw": {
+      "reference_finite": 190,
+      "trial_finite": 190,
+      "mask_mismatch": 0,
+      "common": 190,
+      "max_abs_error": 4.653365159867917e-08,
+      "median_abs_error": 8.343326030058051e-13,
+      "parity": true
+    },
+    "Rsigma_M2_raw": {
+      "reference_finite": 190,
+      "trial_finite": 190,
+      "mask_mismatch": 0,
+      "common": 190,
+      "max_abs_error": 1.614742132005631e-06,
+      "median_abs_error": 1.238009694759512e-12,
+      "parity": true
+    },
+    "support_M2_raw": {
+      "reference_finite": 201,
+      "trial_finite": 201,
+      "mask_mismatch": 0,
+      "common": 201,
+      "max_abs_error": 3.428257677740021e-12,
+      "median_abs_error": 5.064837438339964e-13,
+      "parity": true
+    },
+    "delta_M2_raw": {
+      "reference_finite": 201,
+      "trial_finite": 201,
+      "mask_mismatch": 0,
+      "common": 201,
+      "max_abs_error": 1.90241017383741e-11,
+      "median_abs_error": 8.965050923848139e-13,
+      "parity": true
+    },
+    "RA_M3_raw": {
+      "reference_finite": 201,
+      "trial_finite": 201,
+      "mask_mismatch": 0,
+      "common": 201,
+      "max_abs_error": 4.357042504565811e-11,
+      "median_abs_error": 9.028333636251773e-13,
+      "parity": true
+    },
+    "Rsigma_M3_raw": {
+      "reference_finite": 201,
+      "trial_finite": 201,
+      "mask_mismatch": 0,
+      "common": 201,
+      "max_abs_error": 5.071670861056532e-11,
+      "median_abs_error": 1.3204992654891612e-12,
+      "parity": true
+    },
+    "support_M3_raw": {
+      "reference_finite": 201,
+      "trial_finite": 201,
+      "mask_mismatch": 0,
+      "common": 201,
+      "max_abs_error": 1.205401892745428e-07,
+      "median_abs_error": 3.210215426818763e-11,
+      "parity": true
+    },
+    "delta_M3_raw": {
+      "reference_finite": 201,
+      "trial_finite": 201,
+      "mask_mismatch": 0,
+      "common": 201,
+      "max_abs_error": 1.596098947453939e-11,
+      "median_abs_error": 1.0408340855860843e-12,
+      "parity": true
+    }
+  },
+  "notes": "Historical Stage-6 preprocessing and M2; current directed M3; exact original single-event analysis code not supplied. Do not substitute for archived figure unless parity verified."
+}

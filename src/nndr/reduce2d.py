@@ -1,5 +1,8 @@
 """Reduced two-dimensional diagnostics.
 
+The original multiplier-based helpers below are retained for explicit legacy
+reproduction; compute_indices_from_Q defaults to the revised rates criterion.
+
 Given a fitted operator and a response plane ``Q = [r_hat, n_hat]``, this
 module computes the scalar diagnostics that the NNDR framework reports:
 
@@ -18,11 +21,14 @@ from typing import Any, Dict, Tuple
 
 import numpy as np
 
+from .thresholds import threshold_diagnostics
+
 __all__ = [
     "Kc_from_Delta",
     "twoD_metrics_from_Gamma",
     "gamma_diagnostics",
     "compute_indices_from_Q",
+    "threshold_diagnostics",
 ]
 
 
@@ -95,7 +101,7 @@ def gamma_diagnostics(Gamma: np.ndarray, tol: float = 1e-12):
     return tr, ev, ok
 
 
-def compute_indices_from_Q(A: np.ndarray, Q: np.ndarray) -> Dict[str, Any]:
+def _legacy_indices_from_Q(A: np.ndarray, Q: np.ndarray) -> Dict[str, Any]:
     """Project ``A`` onto plane ``Q`` and return all reduced diagnostics.
 
     Parameters
@@ -118,3 +124,30 @@ def compute_indices_from_Q(A: np.ndarray, Q: np.ndarray) -> Dict[str, Any]:
     trG, evG, okG = gamma_diagnostics(Gamma)
     return {"Gamma": Gamma, "Delta": Delta, "K": K, "KKc": KKc,
             "trG": trG, "evG": evG, "okG": okG}
+
+
+def compute_indices_from_Q(A: np.ndarray, Q: np.ndarray, *, dt=1.0,
+                           threshold="rates") -> Dict[str, Any]:
+    """Project onto Q and compute both revised ratios.
+
+    KKc and Delta follow the selected convention. Default: R_A, with
+    Delta denoting rate splitting for a real pair or beta for a complex pair.
+    Explicit threshold="legacy" reproduces the old multiplier-based values,
+    including historical clipping; use only for original-result reproduction.
+    The legacy okG flag is NOT a corrected admissibility flag.
+    """
+    if threshold not in ("rates", "legacy"):
+        raise ValueError("threshold must be 'rates' or 'legacy'")
+    G = Q.T @ A @ Q
+    revised = threshold_diagnostics(G, dt=dt)
+    rhoF = float(np.max(np.abs(np.linalg.eigvals(A))))
+    revised.update(Gamma=G, trG=complex(np.trace(G)), evG=np.linalg.eigvals(G),
+                   rhoF=rhoF, sigmaF=float(np.linalg.svd(A, compute_uv=False)[0]),
+                   stable_full=bool(rhoF < 1), threshold=threshold)
+    if threshold == "legacy":
+        old = _legacy_indices_from_Q(A, Q)
+        revised.update(old, Kc=Kc_from_Delta(old["Delta"]))
+    else:
+        revised.update(Delta=revised["rate_splitting"], KKc=revised["R_A"],
+                       Kc=revised["Kc_A"], okG=revised["rate_admissible"])
+    return revised

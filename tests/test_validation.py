@@ -129,3 +129,16 @@ def test_rolling_rejects_oversized_window():
 def test_fit_operator_rejects_1d():
     with pytest.raises(ValueError, match="2-D"):
         fit_operator(np.zeros(10))
+
+
+def test_rejects_complex_series():
+    X = np.ones((3, 100), dtype=complex) * (1 + 1j)
+    with pytest.raises(ValueError, match="real-valued"):
+        fit_operator(X)
+
+
+def test_rejects_complex_operator():
+    from nndr import analyze_operator
+    A = np.eye(3, dtype=complex) * (0.5 + 0.1j)
+    with pytest.raises(ValueError, match="real-valued"):
+        analyze_operator(A)

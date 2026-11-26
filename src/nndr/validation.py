@@ -31,6 +31,8 @@ def validate_time_series(X, *, name: str = "X", min_samples: int = 3) -> np.ndar
         If ``X`` is not 2-D, has too few samples, contains non-finite values,
         or looks transposed (more channels than samples).
     """
+    if np.iscomplexobj(X):
+        raise ValueError(f"{name} must be real-valued.")
     arr = np.asarray(X, dtype=float)
 
     if arr.ndim != 2:
@@ -81,6 +83,8 @@ def validate_operator(A, *, name: str = "A") -> np.ndarray:
     ValueError
         If ``A`` is not a finite square 2-D matrix.
     """
+    if np.iscomplexobj(A):
+        raise ValueError(f"{name} must be real-valued.")
     arr = np.asarray(A, dtype=float)
 
     if arr.ndim != 2 or arr.shape[0] != arr.shape[1]:
