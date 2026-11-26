@@ -75,3 +75,21 @@ __all__ = [
     "validate_operator",
     "validate_window",
 ]
+
+# Revised public scientific functions (legacy names retained).
+from .scientific import (
+    method1, method2, method3, order_response_plane, reaction_support,
+    mean_field, response_coordinate, input_coordinate, project_operator,
+    plane_correlation, eigenvalue_splitting, complex_splitting,
+    non_normality_index, eigenvector_conditioning, critical_K_real,
+    critical_K_complex, variance_response_ratio, one_step_ratio,
+    capture_fraction, spectral_radius, sigma_max, departure_from_normality,
+    commutator, commutator_gap, principal_angle, relative_operator_error,
+    numerical_abscissa, condition_number,
+)
+from .scientific import __all__ as _scientific_exports
+from .synthetic import real_generator, complex_generator
+from .synthetic_recovery import embedded_map, simulate_trajectory
+__all__ += _scientific_exports + [
+    "real_generator", "complex_generator", "embedded_map", "simulate_trajectory",
+]

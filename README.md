@@ -215,3 +215,7 @@ If you use this toolkit, please cite the accompanying paper:
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Callable scientific diagnostics
+
+See the [scientific API reference](docs/scientific_api.md) for individual diagnostics, exact M3 internal ordering, and observable alignment.

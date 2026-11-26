@@ -183,7 +183,12 @@ def analyze_operator(A: np.ndarray, *, method: str = "M2", dt: float = 1.0,
     if method not in METHODS:
         raise ValueError(f"Unknown method {method!r}; choose from {list(METHODS)}")
     func, _ = METHODS[method]
-    out = func(A, **method_kwargs)
+    if method == "M3" and threshold != "legacy":
+        # Manuscript Eqs. (40)-(42): directed ordering within M3 plane.
+        from .scientific import method3
+        out = method3(A, dt=dt, **method_kwargs)
+    else:
+        out = func(A, **method_kwargs)
 
     Q = out["Q"]
     idx = compute_indices_from_Q(A, Q, dt=dt, threshold=threshold)
@@ -197,7 +202,8 @@ def analyze_operator(A: np.ndarray, *, method: str = "M2", dt: float = 1.0,
         Delta=float(idx["Delta"]),
         K=float(idx["K"]),
         Kc=float(idx["Kc"]),
-        support=_reaction_support(r_hat),
+        support=(float("nan") if method == "M3" and threshold != "legacy"
+                 and not out["direction_identifiable"] else _reaction_support(r_hat)),
         Q=Q,
         r_hat=r_hat,
         n_hat=n_hat,
@@ -325,6 +331,8 @@ def rolling_analyze(
             "Delta": res.Delta,
             "K": res.K,
             "support": res.support,
+            "plane_identifiable": res.extra.get("plane_identifiable"),
+            "direction_identifiable": res.extra.get("direction_identifiable"),
             "ok": res.ok,
             **{k: res.diagnostics[k] for k in (
                 "R_A", "R_sigma", "Kc_A", "Kc_sigma", "Delta_rate", "beta",
