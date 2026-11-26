@@ -22,6 +22,7 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 
 from .methods import METHODS
+from .estimation import adjacent_pairs, relative_ridge, shrink_operator
 from .reduce2d import compute_indices_from_Q
 from .ridge import ridge_fit_F, select_lambda_ridge, stack_VAR_pairs_from_trajectories
 from .validation import validate_operator, validate_time_series, validate_window
@@ -114,9 +115,11 @@ def fit_operator(
     *,
     lambdas: Optional[np.ndarray] = None,
     lam: Optional[float] = None,
+    lam_rel: Optional[float] = None,
     frac_train: float = 0.8,
     seed: int = 0,
     shrinkage: float = 0.0,
+    legacy_pairs: bool = False,
 ) -> np.ndarray:
     """Estimate the one-step operator ``Fhat`` from a multivariate time series.
 
@@ -130,6 +133,12 @@ def fit_operator(
         ``lam`` is given. Defaults to ``np.logspace(-8, 2, 21)``.
     lam:
         Fixed ridge strength. If supplied, no cross-validation is performed.
+    lam_rel:
+        Relative ridge penalty, scaled by predictor energy per channel.
+        Cannot be combined with lam or lambdas.
+    legacy_pairs:
+        Include a fabricated zero-to-first-sample transition for historical
+        reproduction only. Default uses observed adjacent pairs.
     frac_train:
         Fraction of samples used for training during ``lambda`` selection.
     seed:
@@ -148,7 +157,16 @@ def fit_operator(
     X = validate_time_series(X, name="X")
     N = X.shape[0]
 
-    Xstack, Ystack = stack_VAR_pairs_from_trajectories([X], x0=np.zeros(N))
+    if lam_rel is not None and (lam is not None or lambdas is not None):
+        raise ValueError("lam_rel cannot be combined with lam or lambdas")
+    if legacy_pairs:
+        Xstack, Ystack = stack_VAR_pairs_from_trajectories([X], x0=np.zeros(N))
+    else:
+        Xstack, Ystack = adjacent_pairs(X)
+    if lam_rel is not None:
+        lam = relative_ridge(Xstack, lam_rel)
+    if lam is not None and (not np.isfinite(lam) or lam < 0):
+        raise ValueError("lam must be finite and nonnegative")
 
     if lam is None:
         if lambdas is None:
@@ -157,11 +175,7 @@ def fit_operator(
 
     Fhat = ridge_fit_F(Xstack, Ystack, lam)
 
-    if shrinkage and shrinkage > 0.0:
-        mu = float(np.trace(Fhat) / N)
-        Fhat = (1.0 - shrinkage) * Fhat + shrinkage * mu * np.eye(N)
-
-    return Fhat
+    return shrink_operator(Fhat, shrinkage)
 
 
 def analyze_operator(A: np.ndarray, *, method: str = "M2", dt: float = 1.0,
@@ -221,6 +235,7 @@ def analyze(
     method: str = "M2",
     lambdas: Optional[np.ndarray] = None,
     lam: Optional[float] = None,
+    lam_rel: Optional[float] = None,
     frac_train: float = 0.8,
     seed: int = 0,
     shrinkage: float = 0.0,
@@ -238,7 +253,7 @@ def analyze(
         Data of shape ``(N_channels, T_samples)``.
     method:
         Plane-extraction method: ``"M1"``, ``"M2"`` (default) or ``"M3"``.
-    lambdas, lam, frac_train, seed, shrinkage:
+    lambdas, lam, lam_rel, frac_train, seed, shrinkage:
         Passed to :func:`fit_operator`.
     iters:
         Iteration count for the M2 optimizer (ignored by M1/M3).
@@ -259,7 +274,8 @@ def analyze(
     True
     """
     Fhat = fit_operator(
-        X, lambdas=lambdas, lam=lam, frac_train=frac_train, seed=seed, shrinkage=shrinkage
+        X, lambdas=lambdas, lam=lam, lam_rel=lam_rel, frac_train=frac_train,
+        seed=seed, shrinkage=shrinkage, legacy_pairs=(threshold == "legacy"),
     )
     method_kwargs: Dict[str, Any] = {}
     if method == "M2":
@@ -276,6 +292,7 @@ def rolling_analyze(
     step: int = 1,
     method: str = "M2",
     lam: Optional[float] = None,
+    lam_rel: Optional[float] = None,
     lambdas: Optional[np.ndarray] = None,
     shrinkage: float = 0.0,
     seed: int = 0,
@@ -298,7 +315,7 @@ def rolling_analyze(
         Window length in samples.
     step:
         Step size between consecutive windows.
-    method, lam, lambdas, shrinkage, seed, iters:
+    method, lam, lam_rel, lambdas, shrinkage, seed, iters:
         Passed through to the per-window analysis.
     skip_degenerate:
         If ``True``, windows whose reduced operator is degenerate are still
@@ -320,7 +337,7 @@ def rolling_analyze(
         end = start + window
         Xw = X[:, start:end]
         res = analyze(
-            Xw, method=method, lam=lam, lambdas=lambdas,
+            Xw, method=method, lam=lam, lam_rel=lam_rel, lambdas=lambdas,
             shrinkage=shrinkage, seed=seed, iters=iters, dt=dt, threshold=threshold,
         )
         records.append({

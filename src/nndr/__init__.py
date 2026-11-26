@@ -93,3 +93,13 @@ from .synthetic_recovery import embedded_map, simulate_trajectory
 __all__ += _scientific_exports + [
     "real_generator", "complex_generator", "embedded_map", "simulate_trajectory",
 ]
+
+# Scale-aware estimation and descriptive model adequacy.
+from .estimation import adjacent_pairs, relative_ridge, shrink_operator, fit_relative_operator
+from .dynamics import optimal_gain, variance_response, snapshot_gain, kreiss_constant, normal_surrogate
+from .adequacy import (prediction_skill, lag_structure_error, markov_rate_consistency,
+                       residual_autocorrelation, closure_error, phase_randomize, model_adequacy)
+from .estimation import __all__ as _estimation_exports
+from .dynamics import __all__ as _dynamics_exports
+from .adequacy import __all__ as _adequacy_exports
+__all__ += _estimation_exports + _dynamics_exports + _adequacy_exports

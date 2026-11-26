@@ -219,3 +219,7 @@ MIT — see [LICENSE](LICENSE).
 ## Callable scientific diagnostics
 
 See the [scientific API reference](docs/scientific_api.md) for individual diagnostics, exact M3 internal ordering, and observable alignment.
+
+## Scale-aware estimation and model adequacy
+
+Use `analyze(X, lam_rel=0.003, method="M3", dt=...)` for relative ridge fitting of observed adjacent pairs. The ridge value is an example, not a universal calibrated parameter. See [estimation and adequacy](docs/estimation_adequacy.md) for the remaining assumptions and diagnostics.
