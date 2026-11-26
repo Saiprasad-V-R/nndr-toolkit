@@ -46,7 +46,7 @@ from .ridge import ridge_fit_F, select_lambda_ridge
 # Input validation
 from .validation import validate_operator, validate_time_series, validate_window
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 
 __all__ = [
     "__version__",
