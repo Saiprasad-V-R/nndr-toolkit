@@ -78,6 +78,8 @@ For local demeaning or explicit error logging, use the per-window loop in the [t
 
 ## 5. I have my own recording
 
+[Run Example 5 on your own CSV](../examples/05_analyze_your_own_data/README.md): select channels, timestamps and moving-window settings without editing the source code.
+
 For a numeric CSV, load its timestamp and measurement columns, validate regular sampling and transpose the channel table. The [CSV tutorial](tutorial.md#3-use-your-own-csv) provides a complete loading and windowed workflow. Use actual physical units and record the sampling interval; changing relative channel scales changes the Euclidean metric used by NNDR. For irregular timestamps, justify a regular grid before using this estimator. Fit preprocessing parameters on training data only for prospective prediction.
 
 ## 6. How should I report the result?
