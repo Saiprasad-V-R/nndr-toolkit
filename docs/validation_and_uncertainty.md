@@ -1,5 +1,7 @@
 # Validation and uncertainty: when should I trust an NNDR result?
 
+[Run the illustrated validation example](../examples/06_validation_and_uncertainty/README.md) for a comparison of independent and correlated innovations.
+
 [Documentation](index.md) · [User guide](user_guide.md) · [Statistical controls](statistical_controls.md)
 
 An amplification ratio is a deterministic diagnostic of an estimated reduced map. A large ratio alone is not evidence that the estimator captured the physical mechanism. Validation must address both the fitted map and the chosen plane.
