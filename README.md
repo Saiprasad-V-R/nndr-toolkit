@@ -30,7 +30,7 @@ Requires Python 3.9+ and Git. In an activated virtual environment, install the p
 python -m pip install "nndr-toolkit[dev] @ git+https://github.com/Saiprasad-V-R/nndr-toolkit.git@2.0.0"
 ```
 
-The distribution is `nndr-toolkit`; the import is `nndr`. The `dev` extra includes SciPy, Matplotlib, pandas and pytest. To run the illustrated examples, clone the repository and install from the checkout as described in the [quick-start guide](docs/quickstart.md). The published tag `2.0.0` retains the earlier directory layout; the six illustrated examples belong to the redesigned checkout. While reviewing the redesign, select `redesign/user-experience` before running its examples.
+The distribution is `nndr-toolkit`; the import is `nndr`. The `dev` extra includes SciPy, Matplotlib, pandas and pytest. To run the illustrated examples, clone the repository and install from the checkout as described in the [quick-start guide](docs/quickstart.md). The published tag `2.0.0` retains the earlier directory layout; the six illustrated examples belong to the redesigned checkout.
 
 ## Your first analysis
 
