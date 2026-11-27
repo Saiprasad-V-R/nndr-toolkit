@@ -103,7 +103,7 @@ See the [documentation index](docs/index.md) for the complete technical referenc
 
 ## Manuscript reproducibility
 
-The [separate manuscript reproduction repository](https://github.com/Saiprasad-V-R/nndr-reproducibility) contains the revised figure calculations, archived numerical results, and empirical resources. This toolkit retains its [synthetic validation examples](manuscript/synthetic/README.md) and general-purpose tutorials. External datasets retain their own attribution and licensing terms.
+The [separate manuscript reproduction repository](https://github.com/Saiprasad-V-R/nndr-reproducibility) contains the revised figure calculations, archived numerical results, and empirical resources. 
 
 ## Versions, validation and citation
 
