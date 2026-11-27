@@ -74,6 +74,8 @@ The window and step are in samples. Choose them using time scales, sample size a
 
 For local demeaning or explicit error logging, use the per-window loop in the [tutorial](tutorial.md). Do not treat the rolling `ok` flag as a test of overall model adequacy.
 
+[Explore Example 4: time-varying dynamics and window-length effects](../examples/04_time_varying_dynamics/README.md).
+
 ## 5. I have my own recording
 
 For a numeric CSV, load its timestamp and measurement columns, validate regular sampling and transpose the channel table. The [CSV tutorial](tutorial.md#3-use-your-own-csv) provides a complete loading and windowed workflow. Use actual physical units and record the sampling interval; changing relative channel scales changes the Euclidean metric used by NNDR. For irregular timestamps, justify a regular grid before using this estimator. Fit preprocessing parameters on training data only for prospective prediction.
