@@ -7,7 +7,7 @@ plane and of R is measured. Requires the optional dependencies:
     pip install "nndr-toolkit[benchmark]"
 
 Run with:
-    python examples/03_reproduce_benchmark.py
+    python manuscript/synthetic/legacy_benchmark_example.py
 """
 import numpy as np
 

@@ -1,9 +1,5 @@
-# Reproducibility
+# Manuscript reproducibility
 
-The consolidated, revised reproducibility guide is maintained in
-[`reproducibility/README.md`](reproducibility/README.md).
+All manuscript-specific resources are collected in [manuscript/README.md](manuscript/README.md). For general use of NNDR, start with the [toolkit README](README.md) and [quick start](docs/quickstart.md).
 
-It documents the two runnable synthetic validation experiments, the validated
-representative seizure EEG figures, and the methodological references for EHG,
-freezing of gait and the included push-up recording. It supersedes the original
-preprint-era threshold and preprocessing instructions.
+Published release snapshots retain their original directory layouts.

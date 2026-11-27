@@ -7,8 +7,8 @@ The authoritative source is the supplied CHB01_03.zip (26 November 2026). The th
 From the repository root (with the validated virtual environment active):
 
 ```sh
-python reproducibility/seizure/representative/scripts/plot_figure12_RA_main.py
-python reproducibility/seizure/representative/scripts/plot_figure12_chb01_03_Rsigma_supp.py
+python manuscript/seizure_eeg/representative/scripts/plot_figure12_RA_main.py
+python manuscript/seizure_eeg/representative/scripts/plot_figure12_chb01_03_Rsigma_supp.py
 ```
 
 Outputs are in `representative/figures/`. PDFs are vector plots; typography may differ slightly with platform font availability. Reference originals are in `reference_figures/`. The plots use 201 endpoints -160 to +240 s, with 2 s steps, 40 s windows; the axis extends to +250 s. The EEG waveform also ends at +240 s. No extrapolation.
@@ -18,7 +18,7 @@ Outputs are in `representative/figures/`. PDFs are vector plots; typography may 
 The macOS audit passed all nine numerical comparisons with zero finite-mask mismatches. See [validation/parity_report.json](validation/parity_report.json) for the measured errors and recording checksum.
 
 ```sh
-python -W error::RuntimeWarning reproducibility/seizure/representative/evaluate_edf.py --edf ~/Desktop/nndr-seizure-data/chb01_03.edf --out ~/Desktop/nndr-seizure-reference-audit
+python -W error::RuntimeWarning manuscript/seizure_eeg/representative/evaluate_edf.py --edf ~/Desktop/nndr-seizure-data/chb01_03.edf --out ~/Desktop/nndr-seizure-reference-audit
 ```
 
 Uses the core16 channel order, first occurrence of normalized channel names, 60 Hz notch Q=30, fifth-order Butterworth 0.5--15 Hz zero-phase bandpass, default SciPy polyphase resampling 256->32 Hz, within-window centering, relative ridge 0.003, trace shrinkage 0.05. These detailed preprocessing choices and the 12-restart/200-iteration M2 with seed 0 come from the earlier Stage-6 40 s sensitivity code. Uses NNDR package fitting and corrected thresholds, historical M2 multistart adapter, and current directed M3. The exact single-event evaluation script that produced the archive was NOT included. M3 ordering, gates and preprocessing may differ from that missing implementation. The output also records entropy support for the raw commutator basis to help diagnose any M3 support discrepancy; it is not selected by fitting to the archive.

@@ -9,7 +9,7 @@ From the repository root, in an activated Python environment:
 ```sh
 python -m pip install -e '.[dev]'
 python -m pip install scipy
-python reproducibility/synthetic/validate_thresholds.py --out results/synthetic/thresholds
+python manuscript/synthetic/validate_thresholds.py --out results/synthetic/thresholds
 ```
 
 On the previously validated macOS Python 3.9.6 environment, retain NumPy 1.26.4 and use `python -m pip install scipy==1.13.1`. The core generators themselves require only NumPy. SciPy is used by the independent numerical validation script, not by the NNDR threshold routine.

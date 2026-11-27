@@ -8,7 +8,7 @@ From an activated environment in the repository root:
 
 ```sh
 python -m pip install -e '.[dev]'
-python -W error::RuntimeWarning reproducibility/synthetic/validate_recovery.py --out results/synthetic/recovery
+python -W error::RuntimeWarning manuscript/synthetic/validate_recovery.py --out results/synthetic/recovery
 ```
 
 For the validated Apple Silicon Python 3.9 environment use NumPy 1.26.4 and SciPy 1.13.1 as in `requirements-validated-macos.txt`. `--reps 2` is a quick smoke test; the default 12 is the reported benchmark. All randomness is seeded. Outputs are `recovery_trials.csv`, `recovery_summary.csv`, `recovery_summary.json`, `recovery_benchmark.png`, `recovery_benchmark.svg`.

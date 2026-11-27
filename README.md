@@ -30,10 +30,10 @@ To obtain the tutorials, validation scripts and reference figures, clone the rep
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
 cd nndr-toolkit
-git switch --detach 2.0.0
+git switch main
 ```
 
-Omit the detached checkout to work with the current `main` branch instead. From the repository root:
+The current `main` branch uses the reorganized manuscript layout. For exact historical release reproduction, use the 2.0.0 tag and the documentation in that snapshot. From the repository root:
 
 ```bash
 python -m venv .venv
@@ -85,7 +85,7 @@ python examples/tutorial_nndr.py
 | [Scientific geometry](docs/scientific_api.md) | Direction ordering and observable alignment |
 | [Estimation and adequacy](docs/estimation_adequacy.md) | Response gains and predictive diagnostics |
 | [Statistical controls](docs/statistical_controls.md) | Nulls, bootstrap and branch selection |
-| [Reproducibility](reproducibility/README.md) | Two synthetic validations and representative EEG reproduction; other dataset methods |
+| [Reproducibility](manuscript/README.md) | Two synthetic validations and representative EEG reproduction; other dataset methods |
 | [Threshold migration](THRESHOLD_MIGRATION.md) | Historical conventions and revised diagnostics |
 
 ## What is included in 2.0.0
@@ -111,27 +111,27 @@ For an admissible stable reduced map, `R_A > 1` indicates a delayed increasing i
 ```bash
 python -m pip check
 python -m pytest -v -W error::RuntimeWarning
-python reproducibility/synthetic/validate_thresholds.py --out results/synthetic/thresholds
-python reproducibility/synthetic/validate_recovery.py --out results/synthetic/recovery
+python manuscript/synthetic/validate_thresholds.py --out results/synthetic/thresholds
+python manuscript/synthetic/validate_recovery.py --out results/synthetic/recovery
 ```
 
-The synthetic experiments are new validation examples for the revised framework, not exact regenerations of all original preprint figures. The [representative EEG example](reproducibility/seizure/representative/README.md) includes frozen plotting data and an EDF numerical parity audit. MNE is needed only for the EDF route. Raw EEG data are downloaded from PhysioNet rather than bundled. The original [push-up recording](data/pushup/) is included; no full revised push-up or cohort pipeline is claimed.
+The synthetic experiments are new validation examples for the revised framework, not exact regenerations of all original preprint figures. The [representative EEG example](manuscript/seizure_eeg/representative/README.md) includes frozen plotting data and an EDF numerical parity audit. MNE is needed only for the EDF route. Raw EEG data are downloaded from PhysioNet rather than bundled. The original [push-up recording](manuscript/pushup/) is included; no full revised push-up or cohort pipeline is claimed.
 
 ## Reference validation figures
 
-These are new validation experiments for the revised mathematical framework. The [reproducibility guide](reproducibility/README.md) provides the commands, settings and interpretation.
+These are new validation experiments for the revised mathematical framework. The [reproducibility guide](manuscript/README.md) provides the commands, settings and interpretation.
 
 ### Real and complex thresholds
 
-[![Threshold validation](reproducibility/synthetic/figures/threshold_ground_truth.png)](reproducibility/synthetic/figures/threshold_ground_truth.svg)
+[![Threshold validation](manuscript/synthetic/figures/threshold_ground_truth.png)](manuscript/synthetic/figures/threshold_ground_truth.svg)
 
 ### High-dimensional finite-data recovery
 
-[![Recovery benchmark](reproducibility/synthetic/figures/recovery_benchmark.png)](reproducibility/synthetic/figures/recovery_benchmark.svg)
+[![Recovery benchmark](manuscript/synthetic/figures/recovery_benchmark.png)](manuscript/synthetic/figures/recovery_benchmark.svg)
 
 ### Representative experimental example
 
-The representative seizure EEG workflow includes the [main manuscript figure](reproducibility/seizure/representative/reference_figures/figure12_chb01_03_RA_main.pdf), [supplementary figure](reproducibility/seizure/representative/reference_figures/figure12_chb01_03_Rsigma_supp.pdf), [numerical parity report](reproducibility/seizure/representative/validation/parity_report.json) and [reproduction instructions](reproducibility/seizure/representative/README.md).
+The representative seizure EEG workflow includes the [main manuscript figure](manuscript/seizure_eeg/representative/reference_figures/figure12_chb01_03_RA_main.pdf), [supplementary figure](manuscript/seizure_eeg/representative/reference_figures/figure12_chb01_03_Rsigma_supp.pdf), [numerical parity report](manuscript/seizure_eeg/representative/validation/parity_report.json) and [reproduction instructions](manuscript/seizure_eeg/representative/README.md).
 
 ## Citation
 

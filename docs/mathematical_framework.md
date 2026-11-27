@@ -6,9 +6,9 @@
 
 Let a regularly sampled, real record be $X\in\mathbb R^{N\times T}$ and let $P=X_{:,0:T-1}$, $Y=X_{:,1:T}$. The local map is
 
-$$\nu=\nu_{\mathrm{rel}}\operatorname{tr}(PP^\top)/N,\qquad \hat F=YP^\top(PP^\top+\nu I)^{-1}.$$
+$$\nu=\nu_{\mathrm{rel}}\mathrm{tr}(PP^\top)/N,\qquad \hat F=YP^\top(PP^\top+\nu I)^{-1}.$$
 
-Trace-preserving shrinkage gives $F=(1-\alpha)\hat F+\alpha\operatorname{tr}(\hat F)I/N$, $0\le\alpha<1$. Uniform rescaling preserves the relative ridge estimate, unlike independent scaling of channels. No stability rescaling is applied. The estimator models one-step prediction, not necessarily the physical Jacobian.
+Trace-preserving shrinkage gives $F=(1-\alpha)\hat F+\alpha\mathrm{tr}(\hat F)I/N$, $0\le\alpha<1$. Uniform rescaling preserves the relative ridge estimate, unlike independent scaling of channels. No stability rescaling is applied. The estimator models one-step prediction, not necessarily the physical Jacobian.
 
 M1 uses the eigenbasis SVD baseline. M2 seeks orthogonal unit directions maximizing $r^\top F n$ by alternating optimization. M3 uses extreme eigenvectors of the symmetric commutator $B=FF^\top-F^\top F$, then maximizes directed coupling within their span. In the ordered basis $Q=[r,n]$, $Q^\top Q=I_2$ and $\Gamma=Q^\top FQ$. M3's internal two-dimensional optimization is exact, but the plane itself is not necessarily optimal for any specified time horizon. Plane and direction identifiability are different.
 
@@ -46,7 +46,7 @@ $$S(r)=\frac{\|r\|_1}{\sqrt N\|r\|_2},\qquad m(t)=N^{-1}\sum_i x_i(t),\qquad y_r
 
 The maximum absolute plane-observable correlation uses centered plane coordinates $z=Q^\top x$ and least-squares projection, $a_\star\propto C_{zz}^{\dagger}c_{zm}$. It measures alignment, not held-out predictive skill. A constant observable has undefined correlation. Largest principal angle between orthonormal planes is $\arccos\sigma_{\min}(Q^\top Q_\star)$; API units are degrees. Capture fraction is $\sigma_{\max}(\Gamma)/\sigma_{\max}(F)$ and relative closure error is $\|FQ-Q\Gamma\|_F/\|FQ\|_F$.
 
-The archived seizure figure uses distinct quantities: entropy support $\exp(-\sum_i p_i\log p_i)/N$ with $p_i=r_i^2/\|r\|_2^2$; and multiplier splitting $|\lambda_1-\lambda_2|/|\lambda_1+\lambda_2|$. These are not aliases for the default support or rate splitting. See [reproducibility](../reproducibility/seizure/representative/README.md).
+The archived seizure figure uses distinct quantities: entropy support $\exp(-\sum_i p_i\log p_i)/N$ with $p_i=r_i^2/\|r\|_2^2$; and multiplier splitting $|\lambda_1-\lambda_2|/|\lambda_1+\lambda_2|$. These are not aliases for the default support or rate splitting. See [reproducibility](../manuscript/seizure_eeg/representative/README.md).
 
 ## 5. Dynamical response and checks
 

@@ -10,19 +10,19 @@ NNDR 2.0.0 is the current published release. To install just the package, with t
 python -m pip install "nndr-toolkit[dev] @ git+https://github.com/Saiprasad-V-R/nndr-toolkit.git@2.0.0"
 ```
 
-To obtain the repository tutorials and reference data, clone the repository and check out the fixed release tag, as shown below. Omit the detached checkout if you want the current default `main` branch. The [historical v1.0.0 snapshot](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) uses different conventions.
+To obtain the repository tutorials and reference data, clone the repository and use the current `main` branch, as shown below. For the fixed 2.0.0 snapshot, follow the documentation within that tag. The [historical v1.0.0 snapshot](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) uses different conventions.
 
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
 cd nndr-toolkit
-git switch --detach 2.0.0
+git switch main
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[dev]'
 python -m pip check
 ```
 
-For Windows activate with `.venv\Scripts\activate`. For the validated macOS Apple Silicon Python 3.9.6 environment, use the included constraints when installing: `python -m pip install -e '.[dev]' -c requirements-validated-macos.txt`. The constraints describe one tested environment, not every platform. For EDF reproduction also install `-r reproducibility/seizure/requirements.txt`. The package import is `nndr`; its distribution name is `nndr-toolkit`.
+For Windows activate with `.venv\Scripts\activate`. For the validated macOS Apple Silicon Python 3.9.6 environment, use the included constraints when installing: `python -m pip install -e '.[dev]' -c requirements-validated-macos.txt`. The constraints describe one tested environment, not every platform. For EDF reproduction also install `-r manuscript/seizure_eeg/requirements.txt`. The package import is `nndr`; its distribution name is `nndr-toolkit`.
 
 ## Known discrete operator
 

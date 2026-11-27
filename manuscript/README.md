@@ -1,4 +1,4 @@
-# Reproducibility of NNDR
+# Manuscript resources and reproducibility
 
 Companion to *Inferring Non-Normal Amplification Geometry from Multivariate Time Series*, V. R. Saiprasad, V. Troude and D. Sornette (2026). The [original preprint](https://arxiv.org/abs/2607.14786) and the revised toolkit use different threshold conventions; see the [migration notes](../THRESHOLD_MIGRATION.md).
 
@@ -6,12 +6,12 @@ This repository is a reusable Python analysis package, with two self-contained s
 
 ## Software version
 
-These instructions accompany NNDR 2.0.0. For a fixed release snapshot:
+These instructions describe the reorganized repository using the NNDR 2.0.0 scientific API. Use the current branch for the paths below; the published 2.0.0 tag retains its original layout:
 
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
 cd nndr-toolkit
-git switch --detach 2.0.0
+git switch main
 ```
 
 The [historical implementation](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) is retained separately. For new analyses, use the revised release and record the software commit, preprocessing settings and random seeds.
@@ -22,7 +22,7 @@ Run commands from the repository root in an activated Python environment (Python
 
 ```bash
 python -m pip install -e '.[dev]'
-python -m pip install -r reproducibility/seizure/requirements.txt
+python -m pip install -r manuscript/seizure_eeg/requirements.txt
 python -m pip check
 ```
 
@@ -57,7 +57,7 @@ These are newly designed checks of the revised mathematical framework, not exact
 ### 1.1 Real and complex threshold validation
 
 ```bash
-python -W error::RuntimeWarning reproducibility/synthetic/validate_thresholds.py --out results/synthetic/thresholds
+python -W error::RuntimeWarning manuscript/synthetic/validate_thresholds.py --out results/synthetic/thresholds
 ```
 
 The experiment evaluates 420 sampled stable maps from 140 real/complex generators, with independently computed kernel derivatives and direct singular values. The validated macOS run reported zero classification disagreements for either criterion, and 42 `R_A` boundary cases. The derivative oracle uses a finite numerical search, not an analytical proof.
@@ -69,7 +69,7 @@ Outputs: `threshold_sweep.csv`, `summary.json`, `threshold_ground_truth.png` and
 ### 1.2 Finite-data recovery
 
 ```bash
-python -W error::RuntimeWarning reproducibility/synthetic/validate_recovery.py --out results/synthetic/recovery
+python -W error::RuntimeWarning manuscript/synthetic/validate_recovery.py --out results/synthetic/recovery
 ```
 
 A known two-dimensional block is embedded orthogonally in a stable 12-dimensional system. M1, M2 and M3 are compared on identical fitted operators at 200, 1000 and 5000 samples, for four target `R_A` values and twelve seeded realizations per spectral family and target. The default run produces 1,536 rows across truth, oracle, known-plane and inferred stages. Invalid estimates are retained in the raw results. At 5000 samples, M2/M3 achieved 100% `R_A` classification accuracy in this particular design, not a universal guarantee.
@@ -80,47 +80,34 @@ Outputs: `recovery_trials.csv`, `recovery_summary.csv`, `recovery_summary.json`,
 
 ## 2. Representative seizure EEG (fully runnable)
 
-**Data:** [CHB-MIT Scalp EEG Database, PhysioNet](https://physionet.org/content/chbmit/1.0.0/), recording `chb01/chb01_03.edf`, onset 2996 s and termination 3036 s. See [data attribution and license](seizure/DATA_LICENSE.md). The EDF is downloaded separately; the repository includes the derived plotting CSVs, original plotting scripts and reference PDFs.
+**Data:** [CHB-MIT Scalp EEG Database, PhysioNet](https://physionet.org/content/chbmit/1.0.0/), recording `chb01/chb01_03.edf`, onset 2996 s and termination 3036 s. See [data attribution and license](seizure_eeg/DATA_LICENSE.md). The EDF is downloaded separately; the repository includes the derived plotting CSVs, original plotting scripts and reference PDFs.
 
 **Reproduce the approved main and supplementary Figure 12 from archived CSVs:**
 
 ```bash
-python reproducibility/seizure/representative/scripts/plot_figure12_RA_main.py
-python reproducibility/seizure/representative/scripts/plot_figure12_chb01_03_Rsigma_supp.py
+python manuscript/seizure_eeg/representative/scripts/plot_figure12_RA_main.py
+python manuscript/seizure_eeg/representative/scripts/plot_figure12_chb01_03_Rsigma_supp.py
 ```
 
 **Recompute from the original EDF and audit numerical parity:**
 
 ```bash
-python reproducibility/seizure/download_data.py --data-dir results/seizure/data
-python -W error::RuntimeWarning reproducibility/seizure/representative/evaluate_edf.py \
+python manuscript/seizure_eeg/download_data.py --data-dir results/seizure/data
+python -W error::RuntimeWarning manuscript/seizure_eeg/representative/evaluate_edf.py \
   --edf results/seizure/data/chb01_03.edf --out results/seizure/audit
 ```
 
 The validated configuration uses a fixed core16 bipolar montage, 60 Hz notch (Q=30), fifth-order zero-phase Butterworth bandpass 0.5–15 Hz, anti-aliased polyphase resampling from 256 to 32 Hz, within-window centering, relative ridge 0.003 and shrinkage 0.05. Windows are 40 s long with 2 s step; 201 endpoints span -160 to +240 s relative to onset. M2 uses 12 restarts, 200 iterations and seed 0; M3 uses directed ordering. Only one window is entirely ictal. The figure-specific support is `exp(-sum(p_i log p_i))/N`, with `p_i = r_i^2/sum(r_j^2)`; splitting is `|lambda1-lambda2|/|lambda1+lambda2|`. Both figures retain the original four-panel style, raw traces and five-endpoint median overlays within valid segments. Original fixed plotting limits are retained; extreme values remain in the CSV.
 
-The Mac audit passed all nine numerical comparisons with no finite-mask mismatches, and waveform maximum absolute error 1.28e-11 microvolts. Valid ratio counts were 190/201 for M2 and 201/201 for M3. The largest absolute ratio error was 1.62e-6. See the [parity report](seizure/representative/validation/parity_report.json), [representative README](seizure/representative/README.md), and [main](seizure/representative/reference_figures/figure12_chb01_03_RA_main.pdf) / [supplementary](seizure/representative/reference_figures/figure12_chb01_03_Rsigma_supp.pdf) reference figures. The evaluator reconstructs the original analysis within specified numerical tolerances; it is not the unavailable byte-identical original evaluation script. This is a descriptive single-event analysis, not a seizure-prediction validation. Cohort-level reproduction is outside this public example.
+The Mac audit passed all nine numerical comparisons with no finite-mask mismatches, and waveform maximum absolute error 1.28e-11 microvolts. Valid ratio counts were 190/201 for M2 and 201/201 for M3. The largest absolute ratio error was 1.62e-6. See the [parity report](seizure_eeg/representative/validation/parity_report.json), [representative README](seizure_eeg/representative/README.md), and [main](seizure_eeg/representative/reference_figures/figure12_chb01_03_RA_main.pdf) / [supplementary](seizure_eeg/representative/reference_figures/figure12_chb01_03_Rsigma_supp.pdf) reference figures. The evaluator reconstructs the original analysis within specified numerical tolerances; it is not the unavailable byte-identical original evaluation script. This is a descriptive single-event analysis, not a seizure-prediction validation. Cohort-level reproduction is outside this public example.
 
-## 3. Uterine EHG and freezing of gait (methodological reference)
+## 3. Additional empirical applications (methodological reference)
 
-The following settings describe the original manuscript workflows recorded in the former root reproducibility guide. They do not assert exact parity with the revised cohort analyses.
+- [Uterine EHG](uterine_ehg/README.md): data source and historical analysis settings.
+- [Freezing of gait](freezing_of_gait/README.md): data source and historical analysis settings.
+- [Push-up recording](pushup/README.md): included recording and revised methodology.
 
-- **EHG:** [Icelandic 16-electrode Electrohysterogram Database](https://physionet.org/content/ehgdb/1.0.0/), WFDB physical signals and contraction annotations. Original representative recording `ice012_p_1of4`, EHG9–EHG12; original cohort 123 recordings/45 subjects. Read calibrated signals with `physical=True`, convert mV to microvolts (do not multiply by the raw MAT conversion factor), filter 0.08–2 Hz, resample to 10 Hz. Original windows 60 s, step 5 s, shrinkage 0.1. Activity reference is the channel-mean Hilbert magnitude. Original high-activity and baseline groups use the upper 20% and lower 50% of that envelope per recording, with recording-level Spearman correlation and Cliff's delta, then subject medians. These activity definitions are not direct mechanical contraction measurements.
-- **FOG:** [Daphnet Freezing of Gait](https://archive.ics.uci.edu/dataset/245/daphnet+freezing+of+gait), three ankle acceleration axes. Original representative event `S01R01`, event 03, 1236.0–1245.6 s; first 4 s of freezing used as onset interval. Original windows 3 s, step 0.5 s; compare onset with matched non-freezing baseline and distinguish sustained freezing and gait re-initiation. The revised supplementary analyses are not bundled.
-
-For new analyses use the revised NNDR API, specifying preprocessing, sampling interval, ridge and admissibility rules. Original cohort counts or methods above are historical descriptors, not newly verified revised results.
-
-## 4. Rhythmic push-up recording (data and methodology)
-
-The included [Apple Watch data](../data/pushup/) (`raw_samples_Pushup_duo_27Dec2025..csv`) contain timestamp and `accX`, `accY`, `accZ` user acceleration in g, with gravity already removed. The final revised push-up workflow is described here using the authors' `README_pushup.md` and `fig15_pushup_revised_final.py`; the standalone script is not distributed in this selected reproduction folder.
-
-- Primary signal: demeaned raw acceleration, without per-axis standardization or forced stability rescaling. Classify adjacent pairs by the activity at their predictor time, using a causal trailing 0.5 s mean of acceleration magnitude and the upper 15% as high activity.
-- Fit separate low/high operators with relative ridge 0.003, shrinkage 0.04, and M2/M3. Report full and reduced spectral radii, singular values and both corrected ratios.
-- Offline sensitivity: phase-adaptive three-harmonic removal of voluntary movement, residual bands 1–15 Hz and 1–24 Hz.
-- Class-conditioned uncertainty: 2000 circular moving-block bootstrap replicates with 5 s blocks, preserving original pairs and labels without constructing cross-block transitions. Stationary VAR residual-vector and common-phase Fourier nulls; circular-shift timing is secondary.
-- Separate registered moving-window test: raw demeaned acceleration, M3, 1 s window, 0.1 s step; measure the fraction satisfying `rho(Gamma) < 1 < sigma_max(Gamma)`. Compare with 500 time-varying spectrum- and total-variance-matched normal null realizations and 2000 circular 5 s bootstrap replicates. Use a one-sided Monte Carlo rank p-value.
-
-Reference data checks from the final push-up README: 2252 samples, approximately 50.0854 Hz, 1913 low and 338 high pairs. This is a single-participant illustration. The push-up script and complete revised outputs were not independently rerun as part of this repository update; full reproduction is available only with the authors' final analysis source. Do not confuse the class-conditioned ratios with the separate moving-window statistic.
+These resources do not constitute independently verified complete revised empirical pipelines. The two synthetic validations above are newly designed checks of the revised framework; the older benchmark example in `synthetic/legacy_benchmark_example.py` is retained for historical context, not as a recommended new-user tutorial.
 
 ## Scope of validation and citation
 
