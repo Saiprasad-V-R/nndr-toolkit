@@ -1,5 +1,7 @@
 # Statistical controls
 
+[Documentation](index.md)
+
 Functions support rebuttal R1.3, R2.8 and Section 6.2, but are not the full registered empirical protocol. All time series are `(channels, samples)`; use the same preprocessing and estimation on observed and surrogate data.
 
 - `portmanteau_test(E, max_lag=10, fitted_df=0)`: centered residuals, Cholesky-whitened, adjusted multivariate Ljung–Box statistic `T² sum_l ||C_l||_F²/(T-l)`; `C_l = W[:,l:] @ W[:,:-l].T/T`. Asymptotic chi-square reference with `d²h-fitted_df` degrees of freedom; no correction for data-adaptive plane extraction. Do not interpret default p-values as calibrated for fitted NNDR residuals. Singular residual covariance is rejected.

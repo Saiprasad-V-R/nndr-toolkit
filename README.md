@@ -30,7 +30,6 @@ To obtain the tutorials, validation scripts and reference figures, clone the rep
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
 cd nndr-toolkit
-git switch main
 ```
 
 The current `main` branch uses the reorganized manuscript layout. For exact historical release reproduction, use the 2.0.0 tag and the documentation in that snapshot. From the repository root:
@@ -74,6 +73,8 @@ python examples/tutorial_nndr.py
 ```
 
 ## Documentation
+
+New to NNDR? Start with the [documentation homepage](docs/index.md) and [Understanding NNDR](docs/understanding_nndr.md). Choose a workflow in the [user guide](docs/user_guide.md), and consult [validation and uncertainty](docs/validation_and_uncertainty.md) when interpreting data-driven results.
 
 | Guide | Contents |
 |---|---|

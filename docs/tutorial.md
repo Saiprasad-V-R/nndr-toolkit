@@ -1,6 +1,6 @@
 # Tutorial: from a known system to observations
 
-[Home](../README.md) · [Quick start](quickstart.md) · [API reference](api_reference.md)
+[Documentation](index.md) · [Quick start](quickstart.md) · [API reference](api_reference.md)
 
 Run the self-contained example from the repository root after installing `.[dev]`:
 

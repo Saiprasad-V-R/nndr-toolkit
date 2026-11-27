@@ -1,5 +1,7 @@
 # Estimation, response and model adequacy
 
+[Documentation](index.md)
+
 Data are real, regularly sampled, channels by samples. No automatic centering, scaling, stabilization, or interpolation is performed. Centering and filtering are application choices. `F` denotes a discrete map; `L` denotes a continuous generator.
 
 ## Estimation (rebuttal R2.2, R2.3)

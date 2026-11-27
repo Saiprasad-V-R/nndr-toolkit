@@ -1,5 +1,7 @@
 # Scientific API: geometry and observables
 
+[Documentation](index.md)
+
 All data matrices are real, with channels in rows and samples in columns. `F` is a discrete one-step map; `L` is a continuous-time generator. `Q` is an orthonormal N-by-2 basis. `Gamma = Q.T @ F @ Q`. Angles are in degrees. A sample interval `dt` is positive; rates are inverse time units. No automatic stability rescaling is performed.
 
 ```python

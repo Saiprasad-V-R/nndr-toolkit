@@ -6,12 +6,11 @@ This repository is a reusable Python analysis package, with two self-contained s
 
 ## Software version
 
-These instructions describe the reorganized repository using the NNDR 2.0.0 scientific API. Use the current branch for the paths below; the published 2.0.0 tag retains its original layout:
+These instructions describe the reorganized checkout using the NNDR 2.0.0 scientific API. The published tag `2.0.0` retains its original directory layout. Follow the documentation within that snapshot if reproducing the fixed release. To obtain the current repository, clone it if needed:
 
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
 cd nndr-toolkit
-git switch main
 ```
 
 The [historical implementation](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) is retained separately. For new analyses, use the revised release and record the software commit, preprocessing settings and random seeds.

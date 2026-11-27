@@ -1,6 +1,6 @@
 # Interpretation, limitations and compatibility
 
-[Home](../README.md) · [API](api_reference.md) · [Reproducibility](../manuscript/README.md)
+[Documentation](index.md) · [API](api_reference.md) · [Reproducibility](../manuscript/README.md)
 
 - **Local model:** the estimator is a homogeneous one-step linear predictor, not necessarily the physical Jacobian. Nonstationarity, observation noise, omitted variables, delays, nonlinear dependence and preprocessing may change the result. A two-dimensional compression need not be invariant.
 - **Coordinates:** non-normality depends on the Euclidean metric. Uniform scaling is compatible with relative ridge; per-channel scaling changes that metric. Use finite real data; the high-level validators reject complex arrays. Supply at least two channels and enough observed pairs. Rank deficiency is not resolved scientifically by ridge alone.

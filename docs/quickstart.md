@@ -1,62 +1,80 @@
-# Quick start
+# Quick start: your first NNDR analysis
 
-[Home](../README.md) · [Tutorial](tutorial.md) · [API reference](api_reference.md)
+[Documentation](index.md) · [Understanding NNDR](understanding_nndr.md) · [User guide](user_guide.md)
 
-## Install
+## 1. Install
 
-NNDR 2.0.0 is the current published release. To install just the package, with the extras required for the examples, run the following in an activated virtual environment:
+Use Python 3.9 or newer. For the fixed published scientific release, with Git installed:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 python -m pip install "nndr-toolkit[dev] @ git+https://github.com/Saiprasad-V-R/nndr-toolkit.git@2.0.0"
+python -c "import nndr; print(nndr.__version__)"
 ```
 
-To obtain the repository tutorials and reference data, clone the repository and use the current `main` branch, as shown below. For the fixed 2.0.0 snapshot, follow the documentation within that tag. The [historical v1.0.0 snapshot](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) uses different conventions.
+Expected version: `2.0.0`. On Windows activate using `.venv\Scripts\activate`. The distribution is `nndr-toolkit`; the import is `nndr`. PyPI publication is not required.
+
+To run repository examples, clone the repository and install from the checkout instead:
 
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
 cd nndr-toolkit
-git switch main
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[dev]'
 python -m pip check
 ```
 
-For Windows activate with `.venv\Scripts\activate`. For the validated macOS Apple Silicon Python 3.9.6 environment, use the included constraints when installing: `python -m pip install -e '.[dev]' -c requirements-validated-macos.txt`. The constraints describe one tested environment, not every platform. For EDF reproduction also install `-r manuscript/seizure_eeg/requirements.txt`. The package import is `nndr`; its distribution name is `nndr-toolkit`.
+If already inside a checkout, do not clone it again or switch branches. The current checkout contains the reorganized manuscript resources; the fixed tag `2.0.0` retains its earlier layout, so follow the documentation inside that tag for exact snapshot reproduction. For the validated Apple Silicon macOS/Python 3.9.6 environment, use `python -m pip install -e '.[dev]' -c requirements-validated-macos.txt`. This is one tested environment, not a universal dependency lock. MNE is needed only for the [manuscript EDF evaluation](../manuscript/seizure_eeg/representative/README.md).
 
-## Known discrete operator
+## 2. Understand one small system
 
 ```python
 import numpy as np
 import nndr
+
 F = np.array([[0.8, 0.6], [0.0, 0.5]])
-res = nndr.analyze_operator(F, method='M3', dt=0.1)
-print(res.R_A, res.R_sigma, res.diagnostics['rhoGamma'])
+r = nndr.analyze_operator(F, method='M3', dt=1.0)
+print(r.diagnostics['rhoGamma'])
+print(r.R_A, r.R_sigma)
 ```
 
-For a continuous generator `L`, explicitly sample it first: `F = expm(L * dt)` (import `expm` from `scipy.linalg`). Rates derived from a principal log may alias if sampling is too slow.
+Expected values, approximately: spectral radius 0.8, `R_A = 0.812`, `R_sigma = 1.155`. The map is stable but allows one-step norm growth. The two ratios answer distinct questions; see the [conceptual guide](understanding_nndr.md). A continuous generator must be sampled first with `scipy.linalg.expm(L * dt)`.
 
-## Observations
+## 3. Analyze a multivariate record
 
 ```python
-import numpy as np
-import nndr
-X = np.load('recording.npy')  # provide your own file, N channels by T samples
-X = X - X.mean(axis=1, keepdims=True)  # optional, explicit centering
-res = nndr.analyze(X, method='M3', dt=0.01, lam_rel=0.003)
-print(res.summary(), res.R_sigma)
+L = nndr.complex_generator(1.0, 2.0, 1.5)
+F, Q_true = nndr.embedded_map(L, dimension=12, dt=0.1, seed=1)
+X = nndr.simulate_trajectory(F, samples=5000, seed=2)
+r = nndr.analyze(X, method='M3', dt=0.1,
+                 lam_rel=0.003, shrinkage=0.04)
+print(r.summary())
+print(r.R_A, r.R_sigma, r.support)
 ```
 
-At least two channels and enough observations for NNDR plane extraction are required; the high-level validator also rejects N > T and T < 3. Do not silently transpose, interpolate or rescale channels. The package fits a homogeneous linear predictor with no intercept. Demeaning can be useful for local fluctuation dynamics, but is not automatic. In a held-out analysis estimate centering on training samples only. When sampling is irregular, establish a justified regular grid or use another appropriate estimator first.
+Replace `X` with your own finite real array of shape `(channels, samples)`, at least two channels, at least three samples and no more channels than samples. Use the actual sampling interval and justified preprocessing. Centering is not automatic: the fitted predictor has no intercept. The example parameters are illustrative, not universal. To compare methods, fit once and use `analyze_operator` for each method, as shown in the [user guide](user_guide.md).
 
-## Rolling windows
+## 4. Track changes in time
 
 ```python
-records = nndr.rolling_analyze(X, window=400, step=20, method='M3',
-                               dt=0.01, lam_rel=0.003)
-end = np.array([row['t_end'] for row in records]) * 0.01
-ra = np.array([row['R_A'] for row in records])
-rs = np.array([row['R_sigma'] for row in records])
+rows = nndr.rolling_analyze(X, window=1000, step=250,
+                            method='M3', dt=0.1, lam_rel=0.003,
+                            shrinkage=0.04)
+end = np.array([row['t_end'] for row in rows]) * 0.1
+ra = np.array([row['R_A'] for row in rows])
+rs = np.array([row['R_sigma'] for row in rows])
 ```
 
-`window` and `step` are in samples. `t_end` is an exclusive index; the plotted boundary time is `t_end * dt` if the first sample is at zero. `t_center` is an integer index. Rolling windows are not independent observations. Offline zero-phase filtering is not causal. `rolling_analyze` does not center each window; see the tutorial for explicit window-wise centering. Retain missing values and report their counts. Do not use `ok` as a universal adequacy flag.
+Window and step are in samples. `t_end` is an exclusive index, and the time is the trailing boundary if sampling begins at zero. The routine does not center each window. Overlapping windows are dependent; retain missing values and do not treat `ok` as an adequacy test. The [tutorial](tutorial.md) shows how to center and fit windows explicitly.
+
+## 5. Continue with a complete workflow
+
+Run the existing synthetic tutorial from the repository root:
+
+```bash
+python examples/tutorial_nndr.py --out results/tutorial
+```
+
+This example needs no external data. Read the [user guide](user_guide.md) for your use case and [validation and uncertainty](validation_and_uncertainty.md) before interpreting results from experimental records.
