@@ -11,8 +11,11 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import nndr
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _figure_style import configure_style, format_axis, panel_label, save_figure, BLUE, RED, GREEN
 
-COLORS = {'normal': '#65758B', 'non_normal': '#007E80'}
+COLORS = {'normal': '#666666', 'non_normal': BLUE}
 LABELS = {'normal': 'Normal', 'non_normal': 'Non-normal'}
 
 
@@ -79,60 +82,42 @@ def main(out, coupling=0.6):
     print(json.dumps(summary,indent=2))
     print('Shared unit initial perturbation:', x0)
 
-    with plt.rc_context({'font.family':'DejaVu Sans','font.size':10,
-                         'axes.spines.top':False,'axes.spines.right':False,
-                         'axes.labelsize':10,'axes.titlesize':11,'axes.titleweight':'bold',
-                         'legend.fontsize':9,'xtick.labelsize':9,'ytick.labelsize':9,
-                         'svg.fonttype':'none','figure.facecolor':'white','axes.facecolor':'white'}):
-        fig, axs = plt.subplots(2,2,figsize=(10.6,7.4))
-        fig.subplots_adjust(left=.09,right=.96,bottom=.12,top=.84,wspace=.33,hspace=.48)
-        fig.suptitle('Same eigenvalues, different transient responses',x=.09,y=.965,ha='left',fontsize=17,fontweight='bold')
-        fig.text(.09,.915,r'Both maps have eigenvalues 0.8 and 0.5; directed coupling $F_{12}=$'+f'{coupling:g} in the non-normal map.',fontsize=10,color='#475569')
+    with plt.rc_context():
+        configure_style()
+        fig, axs = plt.subplots(2, 2, figsize=(7.2, 6.0))
+        fig.subplots_adjust(left=.12, right=.97, bottom=.14, top=.94, wspace=.40, hspace=.46)
         a,b,c,d = axs.flat
-        theta=np.linspace(0,2*np.pi,361)
-        a.plot(np.cos(theta),np.sin(theta),color='#A0A9B3',lw=1.2,ls='--',label='Unit circle')
-        a.axhline(0,color='#CBD5E1',lw=.8);a.axvline(0,color='#CBD5E1',lw=.8)
+        theta = np.linspace(0, 2*np.pi, 361)
+        a.plot(np.cos(theta), np.sin(theta), color='.65', ls='--', lw=.9)
+        a.axhline(0, color='.8', lw=.7); a.axvline(0, color='.8', lw=.7)
         for v in (.5,.8):
-            a.scatter(v,0,s=75,facecolors='white',edgecolors=COLORS['normal'],linewidths=2,zorder=3)
-            a.scatter(v,0,s=24,color=COLORS['non_normal'],zorder=4)
-        a.annotate('0.5',(.5,0),xytext=(0,12),textcoords='offset points',ha='center')
-        a.annotate('0.8',(.8,0),xytext=(0,-20),textcoords='offset points',ha='center')
-        a.set(xlim=(-1.15,1.15),ylim=(-1.15,1.15),xlabel='Real part',ylabel='Imaginary part')
-        a.set_aspect('equal',adjustable='box');a.set_title('(a) Identical stable spectra',loc='left')
-        a.text(.02,.02,r'$\rho(F)=0.8$ for both',transform=a.transAxes,color='#475569',fontsize=9)
-        b.plot(np.cos(theta),np.sin(theta),color='#A0A9B3',lw=1,ls='--')
-        for name,xy in trajectories.items():
-            b.plot(xy[:,0],xy[:,1],'-o',ms=3,lw=1.9,color=COLORS[name],label=LABELS[name])
+            a.scatter(v,0,s=45,facecolors='white',edgecolors=COLORS['normal'],linewidths=1.1,zorder=3)
+            a.scatter(v,0,s=13,color=COLORS['non_normal'],zorder=4)
+        a.set(xlim=(-1.15,1.15),ylim=(-1.15,1.15),xlabel=r'$\mathrm{Re}(\lambda)$',ylabel=r'$\mathrm{Im}(\lambda)$')
+        a.set_aspect('equal',adjustable='box')
+        b.plot(np.cos(theta), np.sin(theta), color='.65', ls='--', lw=.9)
+        for name, xy in trajectories.items():
+            b.plot(xy[:,0],xy[:,1],'-o',ms=2.5,color=COLORS[name])
             for j in (0,2):
-                b.annotate('',xy=xy[j+1],xytext=xy[j],arrowprops=dict(arrowstyle='->',color=COLORS[name],lw=1.3))
-        b.scatter(*x0,s=50,facecolors='white',edgecolors='#172B3A',zorder=5)
-        b.annotate('Same initial state',x0,xytext=(6,8),textcoords='offset points',fontsize=8)
-        b.scatter(0,0,s=20,c='#172B3A',zorder=4)
-        b.set(xlabel=r'State $x_1$',ylabel=r'State $x_2$')
-        b.set_aspect('equal',adjustable='box');b.set_title('(b) Different state trajectories',loc='left')
-        # Zoom to the occupied quadrant; the dashed arc marks unit norm.
+                b.annotate('',xy=xy[j+1],xytext=xy[j],arrowprops=dict(arrowstyle='->',color=COLORS[name],lw=.9))
+        b.scatter(*x0,s=32,facecolors='white',edgecolors='black',zorder=5)
+        b.scatter(0,0,s=12,c='black',zorder=4)
         xymax=max(1.1,max(float(np.abs(v).max()) for v in trajectories.values())+.15)
-        b.set(xlim=(-.08,xymax+.12),ylim=(-.08,xymax+.12))
-        b.text(.98,.06,'Dashed arc: unit norm',transform=b.transAxes,ha='right',fontsize=8,color='#475569')
+        b.set(xlabel=r'$x_1$',ylabel=r'$x_2$',xlim=(-.08,xymax+.12),ylim=(-.08,xymax+.12))
+        b.set_aspect('equal',adjustable='box')
         for name in maps:
-            c.plot(steps,gains[name],'-o',color=COLORS[name],lw=2,ms=4,label=LABELS[name])
-            c.plot(steps,np.linalg.norm(trajectories[name],axis=1),'--',color=COLORS[name],lw=1.1,alpha=.75)
-            d.plot(times,variance[name]/2,color=COLORS[name],lw=2)
-        c.axhline(1,color='#8794A1',ls=':',lw=1.2)
-        c.set(xlabel='Discrete time step k',ylabel='Euclidean norm gain',xticks=[0,2,4,6,8,10,12],ylim=(0,max(1.15,float(gains['non_normal'].max())*1.15)))
-        c.set_title('(c) Optimal gain vs. one fixed input',loc='left')
-        c.text(.98,.92,'Solid: optimal at each step\nDashed: shared input',transform=c.transAxes,ha='right',va='top',fontsize=8,color='#475569')
-        c.annotate(f"{summary['non_normal']['sigma']:.3f}", (1,gains['non_normal'][1]),xytext=(10,12),textcoords='offset points',color=COLORS['non_normal'],fontsize=9)
-        d.axhline(1,color='#8794A1',ls=':',lw=1.2)
-        d.set(xlabel='Continuous time (sample intervals)',ylabel=r'Normalized variance response $A(t)/A(0)$',xlim=(0,12),ylim=(0,max(1.08,float(variance['non_normal'].max()/2)*1.1)))
-        d.set_title('(d) Isotropic impulse response',loc='left')
-        d.text(.98,.82,rf"Non-normal: $R_A={summary['non_normal']['R_A']:.3f}$"+'\n'+rf"$R_\sigma={summary['non_normal']['R_sigma']:.3f}$",transform=d.transAxes,ha='right',va='top',color=COLORS['non_normal'],fontsize=10)
-        for ax in (c,d): ax.grid(axis='y',alpha=.18)
+            c.plot(steps,gains[name],'-o',color=COLORS[name],ms=3)
+            c.plot(steps,np.linalg.norm(trajectories[name],axis=1),'--',color=COLORS[name],lw=1.0)
+            d.plot(times,variance[name]/2,color=COLORS[name])
+        c.axhline(1,color='.5',ls=':',lw=.9)
+        c.set(xlabel=r'Step $k$',ylabel='Norm gain',ylim=(0,max(1.15,float(gains['non_normal'].max())*1.15)))
+        d.axhline(1,color='.5',ls=':',lw=.9)
+        d.set(xlabel=r'Time $t$',ylabel=r'$A(t)/A(0)$',xlim=(0,12),ylim=(0,max(1.08,float(variance['non_normal'].max()/2)*1.1)))
+        for ax,label in zip(axs.flat,'abcd'):
+            format_axis(ax); panel_label(ax,label,x=-.15,y=1.02)
         from matplotlib.lines import Line2D
-        fig.legend([Line2D([0],[0],color=COLORS[n],lw=2.5) for n in maps], [LABELS[n] for n in maps],loc='lower center',bbox_to_anchor=(.5,.016),ncol=2,frameon=False)
-        for ext in ('png','svg'):
-            fig.savefig(out/f'comparison.{ext}',dpi=200)
-        plt.close(fig)
+        fig.legend([Line2D([0],[0],color=COLORS[n]) for n in maps], [LABELS[n] for n in maps],loc='lower center',bbox_to_anchor=(.5,.025),ncol=2)
+        save_figure(fig,out,'comparison')
     print('Saved figure, diagnostic summary and response CSVs to',out)
 
 

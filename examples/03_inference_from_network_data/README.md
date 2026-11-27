@@ -10,6 +10,8 @@ Unlike the first two examples, the operator is not supplied to the inference ste
 
 ![Network inference](figures/network_inference.png)
 
+[Vector PDF](figures/network_inference.pdf) · [Vector SVG](figures/network_inference.svg)
+
 *Figure 1. The plotted edges have non-self weights at least 0.16 (all weights enter the simulation). Node signals are offset for legibility. The estimated operator uses source columns and target rows. Squared direction components remove arbitrary signs. The reference directions are ordered by maximum directed coupling within the planted plane. M1 and M2 display their native directions; M3 displays the ordered commutator directions. Panel (f) measures recovery of the plane, not of individual basis vectors.*
 
 ## 1. Construct a controlled directed network
@@ -55,6 +57,8 @@ The known map is used only to generate observations and evaluate recovery. All t
 
 ![True and estimated map](figures/operator_comparison.png)
 
+[Vector PDF](figures/operator_comparison.pdf) · [Vector SVG](figures/operator_comparison.svg)
+
 *Figure 2. True and estimated matrices on identical signed color scales. The upper-right block encodes cross-group coupling. Small fitted entries outside the planted pattern reflect finite-data error. NNDR does not perform sparse graph reconstruction or establish causality.*
 
 ## 3. Interpret the reduced geometry
@@ -93,6 +97,6 @@ The relative operator error changes from 0.3630 to 0.1086. The short run uses th
 
 ## 5. Outputs and reuse
 
-The script writes both figures as PNG and SVG, `summary.json`, `method_diagnostics.csv`, `true_operator.csv`, `estimated_operator.csv`, `observations.csv`, and `direction_weights.csv`. JSON uses null for nonfinite values or unavailable flags; no missing results are silently converted to zero. Use the exported data to inspect a particular node, reproduce the plotted weights, or compare with a different model. All results use public NNDR functions for estimation and diagnostics; network construction and plotting are example-specific.
+The script writes both figures as PNG, SVG and PDF, `summary.json`, `method_diagnostics.csv`, `true_operator.csv`, `estimated_operator.csv`, `observations.csv`, and `direction_weights.csv`. JSON uses null for nonfinite values or unavailable flags; no missing results are silently converted to zero. Use the exported data to inspect a particular node, reproduce the plotted weights, or compare with a different model. All results use public NNDR functions for estimation and diagnostics; network construction and plotting are example-specific.
 
 For your own recordings replace the simulation with a regularly sampled real array and specify the actual sampling interval. Explicitly document units, preprocessing, model order and regularization. This example uses fully observed linear dynamics with additive white innovations. Partial observation, nonlinear dynamics, measurement noise and colored forcing can make the fitted operator an inadequate description.

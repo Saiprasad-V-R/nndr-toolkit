@@ -8,7 +8,7 @@
 
 ![Identical spectra, different transient responses](figures/comparison.png)
 
-[Vector version](figures/comparison.svg) · [Runnable Python script](run.py)
+[Vector SVG](figures/comparison.svg) · [Vector PDF](figures/comparison.pdf) · [Runnable Python script](run.py)
 
 ## 1. Model: identical spectra, different coupling
 
@@ -74,7 +74,7 @@ From the repository root, in an environment with NNDR and the `dev` extras insta
 python examples/01_why_non_normality_matters/run.py
 ```
 
-The output directory `results/examples/01_stability/` contains PNG and SVG plots, the discrete gains and trajectories in `discrete_response.csv`, the continuous response in `variance_response.csv`, and `summary.json` with the matrices, initial state and diagnostics.
+The output directory `results/examples/01_stability/` contains PNG, SVG and PDF plots, the discrete gains and trajectories in `discrete_response.csv`, the continuous response in `variance_response.csv`, and `summary.json` with the matrices, initial state and diagnostics.
 
 Now increase the coupling without changing the eigenvalues:
 

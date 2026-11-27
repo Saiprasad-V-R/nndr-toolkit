@@ -11,13 +11,16 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import nndr
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _figure_style import configure_style, format_axis, panel_label, save_figure, BLUE, RED, GREEN
 
 FAMILIES = {'real': lambda k: nndr.real_generator(1., 3., k),
             'complex': lambda k: nndr.complex_generator(1., 2., k)}
-TITLES = {'real': 'Real rates: −1, −3', 'complex': 'Complex rates: −1 ± 2i'}
+TITLES = {'real': 'Real spectrum', 'complex': 'Complex spectrum'}
 LEVELS = (0., 1.5, 3.5)
-COLORS = ('#65758B', '#007E80', '#D97706')
-RA_COLOR, RS_COLOR = '#007E80', '#365DAB'
+COLORS = ('#666666', BLUE, RED)
+RA_COLOR, RS_COLOR = BLUE, RED
 
 
 def diagnostics(family, k, dt):
@@ -42,9 +45,7 @@ def write_csv(path, header, rows):
 
 
 def save(fig, out, stem):
-    fig.savefig(out/(stem+'.png'), dpi=180)
-    fig.savefig(out/(stem+'.svg'))
-    plt.close(fig)
+    save_figure(fig,out,stem)
 
 
 def main(out, dt=.5):
@@ -57,16 +58,12 @@ def main(out, dt=.5):
     sample_times = steps*dt
     dt_grid = np.linspace(.05, 1.45, 141)
     sweep, response, sampling, summary = [], [], [], {}
-    with plt.rc_context({'font.family':'DejaVu Sans','font.size':10,
-                         'axes.spines.top':False,'axes.spines.right':False,
-                         'axes.titlesize':11,'axes.titleweight':'bold','legend.fontsize':9,
-                         'svg.fonttype':'none','figure.facecolor':'white','axes.facecolor':'white'}):
-        fig, axes = plt.subplots(2,3,figsize=(14.2,8.1))
-        fig.subplots_adjust(left=.07,right=.98,bottom=.10,top=.81,wspace=.36,hspace=.48)
-        fig.suptitle('Non-normality interacts with the spectral family',x=.07,y=.97,ha='left',fontsize=18,fontweight='bold')
-        fig.text(.07,.925,f'Same slow decay rate and spectral radius within and across families; sample interval = {dt:g}.',color='#475569')
-        fig.legend([plt.Line2D([],[],color=c,lw=2.2) for c in COLORS],
-                   [f'K = {k:g}' for k in LEVELS],loc='upper center',bbox_to_anchor=(.52,.885),ncol=3,frameon=False)
+    with plt.rc_context():
+        configure_style()
+        fig, axes = plt.subplots(2,3,figsize=(7.4,5.6))
+        fig.subplots_adjust(left=.10,right=.98,bottom=.12,top=.89,wspace=.47,hspace=.55)
+        fig.legend([plt.Line2D([],[],color=c) for c in COLORS],
+                   [f'K = {k:g}' for k in LEVELS],loc='upper center',bbox_to_anchor=(.52,.995),ncol=3)
         for i,family in enumerate(FAMILIES):
             a,b,c = axes[i]
             vals=[]
@@ -78,14 +75,14 @@ def main(out, dt=.5):
             _,_,ref=diagnostics(family,1.5,dt)
             ka, ksig=ref['Kc_A'],ref['Kc_sigma']
             lo,hi=sorted((ka,ksig))
-            if lo<ks[-1]: a.axvspan(lo,min(hi,ks[-1]),color='#E2E8F0',alpha=.9,label='Criteria differ')
+            if lo<ks[-1]: a.axvspan(lo,min(hi,ks[-1]),color='#E2E8F0',alpha=.9,label=None)
             a.plot(ks,vals[:,0],color=RA_COLOR,lw=2,label=r'$R_A$')
             a.plot(ks,vals[:,1],color=RS_COLOR,lw=2,ls='--',label=r'$R_\sigma$')
             a.axhline(1,color='.45',ls=':',lw=1)
             a.axvline(1.5,color='.55',ls=':',lw=1)
-            a.set(xlabel='Non-normality K',ylabel='Threshold ratio',xlim=(0,4))
-            a.set_title(f'({chr(97+3*i)}) {TITLES[family]}',loc='left')
-            a.legend(loc='upper left',frameon=False)
+            a.set(xlabel=r'$K$',ylabel='Ratio',xlim=(0,4))
+            a.set_title(TITLES[family]); panel_label(a,chr(97+3*i),x=-.19,y=1.02)
+            a.legend(loc='upper left')
             summary[family]={'Kc_A':ka,'Kc_sigma':ksig,'cases':{}}
             for k,col in zip(LEVELS,COLORS):
                 L,F,d=diagnostics(family,k,dt)
@@ -99,22 +96,19 @@ def main(out, dt=.5):
                 b.plot(sample_times,G,marker='o',ms=3,lw=1.7,color=col)
                 c.plot(times,A,lw=2,color=col)
                 if k==LEVELS[-1]:
-                    c.plot(times,np.where(deriv>1e-8,A,np.nan),color=col,lw=4,solid_capstyle='round')
+                    c.plot(times,np.where(deriv>1e-8,A,np.nan),color=col,lw=2.8,solid_capstyle='round')
                 response.extend((family,k,'sampled_norm_gain',float(t),float(v)) for t,v in zip(sample_times,G))
                 response.extend((family,k,'continuous_variance_normalized',float(t),float(v)) for t,v in zip(times,A))
                 summary[family]['cases'][str(k)]={key:float(d[key]) for key in ('R_A','R_sigma','rhoGamma','sigmaGamma')}
                 summary[family]['cases'][str(k)].update(increasing_variance_interval=increasing,peak_sampled_gain=float(G.max()),peak_variance_normalized=float(A.max()))
-            b.axhline(1,color='.45',ls=':',lw=1);b.set(xlabel='Time (sampled)',ylabel=r'$\|F^j\|_2$',xlim=(0,sample_times[-1]))
-            b.set_title(f'({chr(98+3*i)}) Optimal norm gain',loc='left')
-            c.axhline(1,color='.45',ls=':',lw=1);c.set(xlabel='Continuous time',ylabel=r'$A(t)/A(0)$',xlim=(0,4))
-            c.set_title(f'({chr(99+3*i)}) Isotropic variance response',loc='left')
-            for ax in (a,b,c): ax.grid(axis='y',color='#E2E8F0',lw=.7);ax.set_axisbelow(True)
-        fig.text(.07,.035,'Grey band: criteria disagree. Thick orange segments: increasing variance for K = 3.5. Dotted horizontal line: unity.',color='#475569',fontsize=10)
+            b.axhline(1,color='.45',ls=':',lw=1);b.set(xlabel=r'$j\Delta t$',ylabel=r'$\|F^j\|_2$',xlim=(0,sample_times[-1]))
+            panel_label(b,chr(98+3*i),x=-.19,y=1.02)
+            c.axhline(1,color='.45',ls=':',lw=1);c.set(xlabel=r'$t$',ylabel=r'$A(t)/A(0)$',xlim=(0,4))
+            panel_label(c,chr(99+3*i),x=-.19,y=1.02)
+            for ax in (a,b,c): format_axis(ax,nbx=4,nby=4)
         save(fig,out,'spectral_comparison')
-        fig,axes=plt.subplots(1,2,figsize=(10.6,4.5));fig.subplots_adjust(left=.09,right=.97,bottom=.16,top=.76,wspace=.29)
-        fig.suptitle('Sampling changes the discrete one-step criterion',x=.09,y=.96,ha='left',fontsize=16,fontweight='bold')
-        fig.text(.09,.89,'Fixed continuous generator, K = 1.5. No aliasing on the displayed grid (2 Δt < π).',color='#475569')
-        for family,ax in zip(FAMILIES,axes):
+        fig,axes=plt.subplots(1,2,figsize=(7.2,3.0));fig.subplots_adjust(left=.12,right=.98,bottom=.20,top=.85,wspace=.36)
+        for i,(family,ax) in enumerate(zip(FAMILIES,axes)):
             rows=[]
             for h in dt_grid:
                 _,_,d=diagnostics(family,1.5,float(h));rows.append((d['R_A'],d['R_sigma']))
@@ -123,7 +117,7 @@ def main(out, dt=.5):
             ax.plot(dt_grid,rows[:,0],color=RA_COLOR,lw=2,label=r'$R_A$')
             ax.plot(dt_grid,rows[:,1],color=RS_COLOR,lw=2,ls='--',label=r'$R_\sigma$')
             ax.axhline(1,color='.45',ls=':');ax.axvline(dt,color='.55',ls=':',label='Selected interval')
-            ax.set(xlabel='Sample interval',ylabel='Threshold ratio',xlim=(.05,1.45));ax.set_title(TITLES[family],loc='left');ax.grid(axis='y',color='#E2E8F0');ax.legend(frameon=False)
+            ax.set(xlabel=r'$\Delta t$',ylabel='Ratio',xlim=(.05,1.45));ax.set_title(TITLES[family]); format_axis(ax); panel_label(ax,chr(97+i),x=-.15,y=1.02); ax.legend()
         save(fig,out,'sampling_effect')
     write_csv(out/'threshold_sweep.csv',['family','K','dt','R_A','R_sigma','Kc_A','Kc_sigma','rho','sigma'],sweep)
     write_csv(out/'response_curves.csv',['family','K','quantity','time','value'],response)

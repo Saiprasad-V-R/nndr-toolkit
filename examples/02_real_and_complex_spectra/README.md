@@ -50,9 +50,9 @@ The full two-dimensional system is already the response space; there is no need 
 
 ![Computed comparison of the two spectral families](figures/spectral_comparison.png)
 
-[Vector figure](figures/spectral_comparison.svg)
+[Vector SVG](figures/spectral_comparison.svg) · [Vector PDF](figures/spectral_comparison.pdf)
 
-Each row shows the threshold ratios versus $K$, optimal sampled norm gain $\|F^j\|_2$, and normalized isotropic variance response $A(t)/A(0)$, where $A(t)=\|e^{Lt}\|_F^2$. Grey shading marks the range where the two strict threshold classifications differ (excluding boundary equality). The thick orange portions show positive derivatives for $K=3.5$ on the evaluated continuous-time grid.
+Each row shows the threshold ratios versus $K$, optimal sampled norm gain $\|F^j\|_2$, and normalized isotropic variance response $A(t)/A(0)$, where $A(t)=\|e^{Lt}\|_F^2$. Grey shading marks the range where the two strict threshold classifications differ (excluding boundary equality). The thick red portions show positive derivatives for $K=3.5$ on the evaluated continuous-time grid.
 
 For the default sample interval:
 
@@ -71,7 +71,7 @@ For these particular models, the oscillatory system crosses both thresholds at s
 
 ![Sampling dependence for fixed continuous generators](figures/sampling_effect.png)
 
-[Vector figure](figures/sampling_effect.svg)
+[Vector SVG](figures/sampling_effect.svg) · [Vector PDF](figures/sampling_effect.pdf)
 
 Keep the physical generators and K = 1.5 fixed, and change only the sample interval. As long as the principal logarithm recovers the original generator, `R_A` remains constant. `R_sigma` changes because it measures growth across one sample interval. At $\Delta t=1.4$, the complex example has `R_A` approximately 1.6677 but `R_sigma` approximately 0.2639: the sampled one-step map contracts every Euclidean unit perturbation, although the continuous model still has an increasing variance-response interval.
 
@@ -86,7 +86,7 @@ python examples/02_real_and_complex_spectra/run.py --out results/examples/02
 python examples/02_real_and_complex_spectra/run.py --dt 1.4 --out results/examples/02_coarse
 ```
 
-The script checks eigenvalue stability, recovery of the prescribed K, agreement with the public critical-K functions, the one-step classification against the singular value, and the variance classification of the six illustrated cases against a sampled independent derivative calculation. This finite grid is a demonstration, not a proof for all parameters. The output contains two PNG/SVG figures, `threshold_sweep.csv`, `response_curves.csv`, `sampling_sweep.csv` and `summary.json`. The included figures use the default interval. No data download or stochastic realization is needed.
+The script checks eigenvalue stability, recovery of the prescribed K, agreement with the public critical-K functions, the one-step classification against the singular value, and the variance classification of the six illustrated cases against a sampled independent derivative calculation. This finite grid is a demonstration, not a proof for all parameters. The output contains two PNG/SVG/PDF figures, `threshold_sweep.csv`, `response_curves.csv`, `sampling_sweep.csv` and `summary.json`. The included figures use the default interval. No data download or stochastic realization is needed.
 
 Try changing `--dt` within the supported interval [0.05, 1.45]. To explore other decay rates and frequencies, edit the model definitions and update the fixed-case checks accordingly. Use an alias-free sampling interval for complex rates.
 
