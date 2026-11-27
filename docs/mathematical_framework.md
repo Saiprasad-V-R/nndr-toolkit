@@ -75,6 +75,8 @@ For Schur-stable $\Gamma$, $R_\sigma>1$ if and only if $\sigma_{\max}(\Gamma)>1$
 
 Use `threshold_diagnostics` to obtain both values and their flags. `eigenvalue_splitting` returns the real rate splitting; `complex_splitting` returns beta. Do not treat missing values as zero. The [worked comparison](understanding_nndr.md#1-why-look-beyond-eigenvalues) shows a case where the ratios disagree.
 
+[Explore the computed real/complex threshold and sampling comparisons](../examples/02_real_and_complex_spectra/README.md).
+
 ## 5. Directional and observable diagnostics
 
 $$

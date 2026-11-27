@@ -19,7 +19,7 @@ A stable system can still amplify a perturbation before it decays. NNDR estimate
 
 ## Illustrated examples
 
-Start with the [scientific example gallery](../examples/README.md). [Example 1](../examples/01_why_non_normality_matters/README.md) compares identical stable spectra with different finite-time responses.
+Start with the [scientific example gallery](../examples/README.md). [Example 1](../examples/01_why_non_normality_matters/README.md) compares identical stable spectra with different finite-time responses. [Example 2](../examples/02_real_and_complex_spectra/README.md) shows how the spectral family and sampling interval affect the two thresholds.
 
 ## The analysis at a glance
 
