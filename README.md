@@ -1,139 +1,132 @@
 <p align="center">
-  <img src="docs/assets/nndr_logo.svg" alt="NNDR — Non-Normal Directional Response" width="560">
+  <img src="docs/assets/nndr_logo.svg" alt="NNDR — Non-Normal Directional Response" width="460">
 </p>
 
-# NNDR — Non-Normal Directional Response inference
+# NNDR: Non-Normal Directional Response inference
 
-**V. R. Saiprasad, V. Troude, D. Sornette**
+**Discover how perturbations amplify in stable dynamical systems.**
 
-[![Release 2.0.0](https://img.shields.io/badge/release-2.0.0-blue.svg)](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/2.0.0) [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+V. R. Saiprasad, V. Troude, D. Sornette
 
-NNDR is a Python toolkit for inferring non-normal amplification geometry from multivariate time series. It estimates a local linear predictor, extracts a two-dimensional response plane and quantifies its spectral and directional geometry. A stable spectrum can coexist with transient growth; the toolkit reports the revised variance-response criterion `R_A` and the exact discrete one-step criterion `R_sigma` separately.
+[![Release 2.0.0](https://img.shields.io/badge/release-2.0.0-blue.svg)](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/2.0.0) [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/) [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Current release: NNDR 2.0.0
+[Quick start](docs/quickstart.md) · [Examples](examples/README.md) · [User guide](docs/user_guide.md) · [API reference](docs/api_reference.md) · [Manuscript resources](manuscript/README.md)
 
-The default `main` branch contains the current revised implementation and documentation. Use the fixed [2.0.0 release](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/2.0.0) for reproducible research and new scientific analyses. The [original v1.0.0 snapshot](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) remains available for historical results; its threshold conventions differ. See the [migration guide](THRESHOLD_MIGRATION.md).
+## Why NNDR?
 
-## Installation
+Two dynamical systems can have exactly the same stable eigenvalues and yet respond very differently to a perturbation. In a non-normal system, the geometry of the dynamics can produce transient amplification before eventual decay. Spectral stability alone does not reveal this response.
 
-Python 3.9 or newer and Git are required for the following installation. To install the published package without cloning the repository, create and activate a virtual environment, then run:
+[![Two stable systems with identical eigenvalues and different finite-time responses](examples/01_why_non_normality_matters/figures/comparison.png)](examples/01_why_non_normality_matters/README.md)
+
+*Two discrete maps with eigenvalues 0.8 and 0.5. The non-normal map permits one-step norm growth, even though its continuous isotropic impulse variance-response kernel decreases. [Explore the model, code and interpretation.](examples/01_why_non_normality_matters/README.md)*
+
+NNDR is a Python toolkit that estimates a local linear predictor from multivariate time series, extracts a two-dimensional response plane, and characterizes its input and reaction directions. It also accepts a known discrete operator, bypassing estimation. Use it to examine amplification geometry in models, networks and experimental recordings, rather than relying on eigenvalues alone.
+
+## Install
+
+Requires Python 3.9+ and Git. In an activated virtual environment, install the published scientific API:
 
 ```bash
 python -m pip install "nndr-toolkit[dev] @ git+https://github.com/Saiprasad-V-R/nndr-toolkit.git@2.0.0"
-python -c "import nndr; print(nndr.__version__)"
 ```
 
-The expected version is `2.0.0`. The distribution is `nndr-toolkit`; the import is `nndr`.
+The distribution is `nndr-toolkit`; the import is `nndr`. The `dev` extra includes SciPy, Matplotlib, pandas and pytest. To run the illustrated examples, clone the repository and install from the checkout as described in the [quick-start guide](docs/quickstart.md). The published tag `2.0.0` retains the earlier directory layout; the six illustrated examples belong to the redesigned checkout.
 
-To obtain the tutorials, validation scripts and reference figures, clone the repository:
+## Your first analysis
 
-```bash
-git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
-cd nndr-toolkit
-git switch --detach 2.0.0
-```
-
-Omit the detached checkout to work with the current `main` branch instead. From the repository root:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev]'
-```
-
-On Windows use `.venv\Scripts\activate` instead. For the minimal NumPy-only core, use `python -m pip install -e .`; matrix exponential/logarithm, surrogate and statistical functions require SciPy. The `dev` extra installs SciPy, pandas, Matplotlib and pytest. For an existing environment, do not recreate it. See the [installation guide](docs/quickstart.md) for the validated macOS constraints. The released package is available through GitHub; PyPI installation is not required.
-
-## Quick start
+Start with a known stable map:
 
 ```python
+import numpy as np
 import nndr
 
-L = nndr.complex_generator(gamma=1.0, omega=2.0, K=1.5)
-F, Q_true = nndr.embedded_map(L, dimension=12, dt=0.1, seed=1)
-X = nndr.simulate_trajectory(F, samples=5000, seed=2)
-res = nndr.analyze(X, method="M3", dt=0.1, lam_rel=0.003, shrinkage=0.04)
-print(res.summary())
-print(res.R_A, res.R_sigma, res.support)
+F = np.array([[0.8, 0.6], [0.0, 0.5]])
+r = nndr.analyze_operator(F, method="M3", dt=1.0)
+print(r.R_A, r.R_sigma)  # approximately 0.812, 1.155
 ```
 
-For your own recording, replace `X` with a finite real NumPy array of shape `(channels, samples)` and use its actual sampling interval. Centering, filtering and channel scaling are explicit application choices. Relative ridge 0.003 is an illustrative setting, not a universal recommendation.
+For a Schur-stable reduced map, the two ratios answer different questions:
 
-For direct comparison of M2 and M3, fit once and use the same operator:
+| Diagnostic | Interpretation |
+|---|---|
+| `R_A > 1` | The continuous isotropic impulse variance-response kernel has an increasing interval, when the real principal logarithm is admissible. It need not exceed its initial value. |
+| `R_sigma > 1` | The reduced discrete map has a largest singular value greater than one; some unit perturbation grows in a single sample step. |
+
+For a multivariate recording, use the high-level inference interface instead:
 
 ```python
-Fhat = nndr.fit_operator(X, lam_rel=0.003, shrinkage=0.04)
-a = nndr.analyze_operator(Fhat, method="M2", dt=0.1)
-b = nndr.analyze_operator(Fhat, method="M3", dt=0.1)
-print(nndr.principal_angle(a.Q, b.Q))
+L = nndr.complex_generator(1.0, 2.0, 1.5)
+F, Q_true = nndr.embedded_map(L, dimension=12, dt=0.1, seed=1)
+X = nndr.simulate_trajectory(F, samples=5000, seed=2)
+r = nndr.analyze(X, method="M3", dt=0.1, lam_rel=0.003)
+print(r.R_A, r.R_sigma, r.support)
 ```
 
-`analyze_operator` expects a **discrete map**, not a continuous generator. Use `scipy.linalg.expm(L * dt)` for a known continuous system. Run the full worked example from the repository root:
+Replace `X` with your own real, finite array of shape `(channels, samples)` and use its sampling interval. Centering, filtering and channel scaling must be justified explicitly. The regularization settings are illustrative. For continuous generators, first sample the dynamics with `scipy.linalg.expm(L * dt)` before calling `analyze_operator`.
+
+[Understand the method](docs/understanding_nndr.md) · [Analyze your own CSV](examples/05_analyze_your_own_data/README.md)
+
+## Scientific example gallery
+
+Each example is a self-contained, runnable tutorial with model definitions, computed figures, interpretation and limitations. No external datasets are required. Click a figure to open its tutorial.
+
+| Spectral geometry | Network inference |
+|---|---|
+| [![Real and complex spectra](examples/02_real_and_complex_spectra/figures/spectral_comparison.png)](examples/02_real_and_complex_spectra/README.md) | [![Network inference](examples/03_inference_from_network_data/figures/network_inference.png)](examples/03_inference_from_network_data/README.md) |
+| [02 — Real and complex spectra](examples/02_real_and_complex_spectra/README.md): thresholds and sampling dependence. | [03 — Network inference](examples/03_inference_from_network_data/README.md): recover a planted response plane and node-wise directions. |
+| **Time-varying dynamics** | **Experimental workflow** |
+| [![Time-varying dynamics](examples/04_time_varying_dynamics/figures/time_varying_dynamics.png)](examples/04_time_varying_dynamics/README.md) | [![Analyze your own data](examples/05_analyze_your_own_data/figures/recording_analysis.png)](examples/05_analyze_your_own_data/README.md) |
+| [04 — Time-varying dynamics](examples/04_time_varying_dynamics/README.md): compare trailing-window lengths. | [05 — Analyze your own data](examples/05_analyze_your_own_data/README.md): configurable multichannel CSV analysis. |
+| **Validation and uncertainty** | **Start with the fundamentals** |
+| [![Validation and uncertainty](examples/06_validation_and_uncertainty/figures/validation_and_uncertainty.png)](examples/06_validation_and_uncertainty/README.md) | [01 — Why non-normality matters](examples/01_why_non_normality_matters/README.md), the opening demonstration above. [Browse all six tutorials.](examples/README.md) |
+| [06 — Validation and uncertainty](examples/06_validation_and_uncertainty/README.md): normal references, bootstrap intervals and residual dependence. | All examples use a common [scientific figure style](examples/FIGURE_STYLE.md), fixed default seeds where applicable, and export numerical results. |
+
+From the redesigned repository root, run an example with:
 
 ```bash
-python examples/tutorial_nndr.py
+python examples/01_why_non_normality_matters/run.py --out results/example01
 ```
 
 ## Documentation
 
-| Guide | Contents |
+| If you want to… | Read |
 |---|---|
-| [Quick start](docs/quickstart.md) | Installation, known operators, time series and rolling windows |
-| [Mathematical framework](docs/mathematical_framework.md) | Estimation, plane extraction, real/complex thresholds and support |
-| [Public API reference](docs/api_reference.md) | Function signatures, return values and domains |
-| [Tutorial](docs/tutorial.md) | Worked synthetic and general experimental workflows |
-| [Limitations](docs/limitations.md) | Interpretation, identifiability, statistical controls and compatibility |
-| [Scientific geometry](docs/scientific_api.md) | Direction ordering and observable alignment |
-| [Estimation and adequacy](docs/estimation_adequacy.md) | Response gains and predictive diagnostics |
-| [Statistical controls](docs/statistical_controls.md) | Nulls, bootstrap and branch selection |
-| [Reproducibility](reproducibility/README.md) | Two synthetic validations and representative EEG reproduction; other dataset methods |
-| [Threshold migration](THRESHOLD_MIGRATION.md) | Historical conventions and revised diagnostics |
+| Learn the geometry and physical meaning | [Understanding NNDR](docs/understanding_nndr.md) |
+| Install and perform a first analysis | [Quick start](docs/quickstart.md) |
+| Choose a workflow for your model or measurements | [User guide](docs/user_guide.md) |
+| Derive the spectral thresholds and directional diagnostics | [Mathematical framework](docs/mathematical_framework.md) |
+| Find a function, parameter or return value | [API reference](docs/api_reference.md) |
+| Assess fit adequacy and uncertainty | [Validation and uncertainty](docs/validation_and_uncertainty.md) |
+| Understand identifiability, sampling and model limitations | [Limitations](docs/limitations.md) |
 
-## What is included in 2.0.0
+See the [documentation index](docs/index.md) for the complete technical reference. NNDR includes M1 (eigenbasis-SVD), M2 (alternating directed-coupling optimization) and M3 (commutator-based plane extraction with directed ordering), relative ridge estimation, fixed/rolling-window inference, geometric diagnostics, predictive checks and statistical controls. M2 and M3 agreement is a comparison of extraction methods on a common estimate, not independent validation. Undefined ratios remain NaN; full-map and reduced-map stability are distinct. The inferred predictor is not necessarily a physical Jacobian or a causal mechanism.
 
-| Component | Capability |
+## Manuscript reproducibility
+
+All paper-specific analysis resources are organized separately in [manuscript/](manuscript/README.md).
+
+| Resource | Scope |
 |---|---|
-| Estimation | Observed adjacent-pair fitting, relative ridge and trace-preserving shrinkage |
-| Geometry | M1, M2 and directed M3; plane and observable alignment |
-| Amplification | Corrected real/complex variance-response and discrete one-step criteria |
-| Time series | Fixed and rolling-window analysis |
-| Model diagnostics | Closure, prediction skill, lag consistency, residual tests and gains |
-| Statistical controls | Normal surrogates, phase randomization, Monte Carlo tests and block bootstrap |
-| Reproducibility | Two synthetic benchmarks and one validated representative EEG example |
+| [Synthetic validations](manuscript/synthetic/README.md) | Revised real/complex threshold tests and high-dimensional finite-data recovery; not exact reproductions of all original numbered figures. |
+| [Seizure EEG](manuscript/seizure_eeg/representative/README.md) | Representative recording, archived figure data, plotting scripts and EDF numerical parity audit. |
+| [Uterine EHG](manuscript/uterine_ehg/README.md) | Dataset and methodology guidance. |
+| [Freezing of gait](manuscript/freezing_of_gait/README.md) | Dataset and supplementary methodology guidance. |
+| [Push-up recording](manuscript/pushup/README.md) | Original inertial data and revised methodology; no complete revised pipeline claimed. |
 
-## Methods and interpretation
+The general toolkit examples are independent of these resources. External datasets retain their own licenses and attribution requirements.
 
-M1 is an eigenbasis-SVD baseline; M2 uses alternating directed-coupling optimization; M3 extracts a commutator plane and orders its response/input directions. M2 and M3 agreement checks sensitivity to the extraction rule, not the accuracy of their common fitted operator. M2 is not a certified global optimizer.
+## Versions, validation and citation
 
-For an admissible stable reduced map, `R_A > 1` indicates a delayed increasing interval in the isotropic impulse variance-response kernel. It need not exceed its initial value. `R_sigma > 1` is equivalent to `sigma_max(Gamma) > 1` for stable `Gamma`. The default `R` is `R_A`; undefined ratios are NaN, not zero. Full and reduced stability are distinct. The default reaction support is normalized L1 support; the frozen EEG figure uses entropy support and discrete multiplier splitting instead. Neither threshold is a clinical boundary or proof of causation.
+The published scientific API is [2.0.0](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/2.0.0). The original [v1.0.0 snapshot](https://github.com/Saiprasad-V-R/nndr-toolkit/tree/v1.0.0) is preserved for historical work; its threshold conventions differ. See the [migration guide](THRESHOLD_MIGRATION.md) and [changelog](CHANGELOG.md). Cite the exact release or commit used, together with preprocessing, sample interval, estimator settings and random seeds. The redesigned documentation is not yet a new archived release.
 
-## Reproduction and tests
+Run the tests from a checkout with `.[dev]` installed:
 
 ```bash
 python -m pip check
-python -m pytest -v -W error::RuntimeWarning
-python reproducibility/synthetic/validate_thresholds.py --out results/synthetic/thresholds
-python reproducibility/synthetic/validate_recovery.py --out results/synthetic/recovery
+python -m pytest -W error::RuntimeWarning
 ```
 
-The synthetic experiments are new validation examples for the revised framework, not exact regenerations of all original preprint figures. The [representative EEG example](reproducibility/seizure/representative/README.md) includes frozen plotting data and an EDF numerical parity audit. MNE is needed only for the EDF route. Raw EEG data are downloaded from PhysioNet rather than bundled. The original [push-up recording](data/pushup/) is included; no full revised push-up or cohort pipeline is claimed.
-
-## Reference validation figures
-
-These are new validation experiments for the revised mathematical framework. The [reproducibility guide](reproducibility/README.md) provides the commands, settings and interpretation.
-
-### Real and complex thresholds
-
-[![Threshold validation](reproducibility/synthetic/figures/threshold_ground_truth.png)](reproducibility/synthetic/figures/threshold_ground_truth.svg)
-
-### High-dimensional finite-data recovery
-
-[![Recovery benchmark](reproducibility/synthetic/figures/recovery_benchmark.png)](reproducibility/synthetic/figures/recovery_benchmark.svg)
-
-### Representative experimental example
-
-The representative seizure EEG workflow includes the [main manuscript figure](reproducibility/seizure/representative/reference_figures/figure12_chb01_03_RA_main.pdf), [supplementary figure](reproducibility/seizure/representative/reference_figures/figure12_chb01_03_Rsigma_supp.pdf), [numerical parity report](reproducibility/seizure/representative/validation/parity_report.json) and [reproduction instructions](reproducibility/seizure/representative/README.md).
-
-## Citation
+If you use NNDR, please cite the accompanying manuscript ([arXiv:2607.14786](https://arxiv.org/abs/2607.14786)) and software version ([citation metadata](CITATION.cff)).
 
 ```bibtex
 @article{saiprasad2026nndr,
@@ -147,4 +140,4 @@ The representative seizure EEG workflow includes the [main manuscript figure](re
 }
 ```
 
-Software: [MIT license](LICENSE). External datasets retain their own licenses and attribution requirements. Report the exact software commit, preprocessing, sampling interval, estimator settings and random seeds with results.
+[MIT license](LICENSE) · [Contributing](CONTRIBUTING.md) · [Report an issue](https://github.com/Saiprasad-V-R/nndr-toolkit/issues)

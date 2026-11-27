@@ -1,40 +1,28 @@
 # Changelog
 
-All notable changes to this project are documented here. The format is based on
-[Keep a Changelog](https://keepachangelog.com/), and this project adheres to
-[Semantic Versioning](https://semver.org/).
+Notable changes to NNDR. Published snapshots are retained; see the [release history](https://github.com/Saiprasad-V-R/nndr-toolkit/releases).
 
-## [Unreleased]
+## Unreleased — scientific usability redesign
 
-### Added
-- Input-validation guards (`nndr.validation`) with clear, actionable error
-  messages for common mistakes: 1-D input, transposed data, NaN/Inf values,
-  windows longer than the series, and non-square operators. The guards fire
-  through the public API (`analyze`, `rolling_analyze`, `fit_operator`).
-- Continuous integration via GitHub Actions: the test suite runs on Python
-  3.9–3.12 and a wheel is built on every push and pull request.
+- Separate manuscript-specific data, scripts, validation figures and methodology under `manuscript/`.
+- Add six independently runnable, illustrated scientific tutorials covering stable amplification, real and complex spectra, network inference, time-varying dynamics, CSV analysis and uncertainty.
+- Standardize example figures using a shared publication-style plotting module and export PNG, PDF and SVG.
+- Reorganize the user guide, mathematical framework, API navigation and README; correct incompatible math macros.
+- Replace two introductory scripts with the expanded CSV and moving-window tutorials; preserve historical versions in Git.
+- Update software citation metadata; the next archival DOI remains pending collaborator review.
 
-## [0.1.0] — 2026
+The scientific API remains 2.0.0. No new empirical results or revised mathematical formulas are introduced by this documentation redesign.
 
-Initial public release.
+## [2.0.0](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/2.0.0) — 2026-11-26
 
-### Added
-- High-level, inference-first API in `nndr.core`:
-  - `analyze` — estimate the local operator from a time series and compute the
-    reduced diagnostics (`R`, `Delta`, `K`, support, response plane).
-  - `rolling_analyze` — the same in a sliding window, for non-stationary data.
-  - `analyze_operator` — diagnostics from a known operator (no estimation).
-  - `fit_operator` — ridge-fit the one-step operator, with optional
-    trace-preserving shrinkage.
-  - `NNDRResult` dataclass with a `summary()` helper.
-- Three plane-extraction methods in `nndr.methods`:
-  - M1 — eigenbasis-SVD baseline extraction.
-  - M2 — optimization-based directed-coupling extraction (recommended).
-  - M3 — commutator-based plane extraction (independent cross-check).
-- Reduced diagnostics in `nndr.reduce2d`, including the closed-form threshold
-  `Kc(Delta)`.
-- Validation harness (`nndr.benchmark`) and plotting helpers (`nndr.plotting`),
-  available via the optional `benchmark` extra.
-- Test suite (16 tests) covering diagnostics, methods, and the high-level API.
-- Three runnable examples under `examples/`.
-- Packaging via `pyproject.toml` (hatchling), MIT license, and `CITATION.cff`.
+- Correct real and complex variance-response thresholds and add the distinct discrete one-step ratio `R_sigma`; `R` defaults to `R_A`.
+- Add observed adjacent-pair estimation, relative ridge, trace-preserving shrinkage and directed M3 ordering.
+- Expose scientific geometry, dynamical gains, model-adequacy diagnostics, phase surrogates, normal references and bootstrap functions.
+- Add controlled synthetic threshold and finite-data recovery tests.
+- Validate the representative seizure EEG evaluation against archived numerical results, with preserved finite-value masks.
+- Add technical documentation and a runnable end-to-end tutorial.
+- Verify 134 tests from a clean wheel installation of the preceding scientific implementation on macOS Apple Silicon, Python 3.9.6, before the version-only bump to 2.0.0. Cross-platform CI coverage has not been established.
+
+## [v1.0.0](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/v1.0.0) — 2026-07-16
+
+Original public toolkit snapshot: high-level estimation and rolling analysis, three plane-extraction methods, historical reduced threshold conventions, synthetic benchmark helpers and introductory scripts. See the [migration guide](THRESHOLD_MIGRATION.md) before comparing results with the current API.

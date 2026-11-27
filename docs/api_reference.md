@@ -1,6 +1,6 @@
 # Public API reference
 
-[Home](../README.md) · [Quick start](quickstart.md) · [Tutorial](tutorial.md) · [Mathematics](mathematical_framework.md)
+[Documentation](index.md) · [Quick start](quickstart.md) · [Tutorial](tutorial.md) · [Mathematics](mathematical_framework.md)
 
 Import with `import nndr`. The following call forms describe the public API of NNDR 2.0.0. `X` is real, finite, channels by samples; `F` is a discrete square map; `L` is a continuous generator; `Q` is an orthonormal two-column plane; `Gamma` is a real 2-by-2 compression. `dt` is the sampling interval, not the window length. Keyword-only parameters are shown after `*`. No routine automatically centers or normalizes channels. Install `.[dev]` for all examples.
 

@@ -1,86 +1,53 @@
-# NNDR documentation
+# Learn NNDR
 
-This page collects the conceptual background and a short API reference. For a
-quick start, see the top-level [README](../README.md); for runnable code, see
-[`examples/`](../examples/).
+[Repository home](../README.md) · [Manuscript resources](../manuscript/README.md)
 
-## Background
+A stable system can still amplify a perturbation before it decays. NNDR estimates the local dynamics from a multivariate recording and extracts a two-dimensional plane in which to investigate this amplification. It can also be used directly with a known linear map.
 
-A linear system `x_{k+1} = F x_k` is *non-normal* when `F Fᵀ ≠ Fᵀ F`, i.e. its
-eigenvectors are not orthogonal. Such a system can be asymptotically stable —
-all eigenvalues inside the unit disk — yet still amplify perturbations strongly
-over a finite time, because a perturbation can be routed through non-orthogonal
-directions before it decays.
+## Start with your question
 
-Eigenvalues alone do not reveal this. NNDR instead estimates the local operator
-from data and isolates the two-dimensional plane responsible for the dominant
-finite-time response.
+| I want to… | Where to start |
+|---|---|
+| Understand why stability does not rule out amplification | [Understanding NNDR](understanding_nndr.md) |
+| Install the package and run my first analysis | [Quick start](quickstart.md) |
+| Analyze my model, simulations or measurements | [User guide](user_guide.md) |
+| Work through a complete synthetic example | [Tutorial](tutorial.md) |
+| Understand the real and complex thresholds | [Mathematical framework](mathematical_framework.md) |
+| Check whether the fitted model is reliable | [Validation and uncertainty](validation_and_uncertainty.md) |
+| Find a function, argument or output field | [API reference](api_reference.md) |
+| Reproduce results associated with the paper | [Manuscript resources](../manuscript/README.md) |
 
-## The reduced diagnostics
+## Illustrated examples
 
-Given a fitted operator `F̂` and a response plane `Q = [r̂, n̂]`, project to the
-reduced operator `Γ = Qᵀ F̂ Q` (a 2×2 matrix) and compute:
+Start with the [scientific example gallery](../examples/README.md). [Example 1](../examples/01_why_non_normality_matters/README.md) compares identical stable spectra with different finite-time responses. [Example 2](../examples/02_real_and_complex_spectra/README.md) shows how the spectral family and sampling interval affect the two thresholds. [Example 3](../examples/03_inference_from_network_data/README.md) recovers a hidden network response plane from observed trajectories. [Example 4](../examples/04_time_varying_dynamics/README.md) compares two trailing-window lengths for time-varying amplification. [Example 5](../examples/05_analyze_your_own_data/README.md) analyzes a numeric CSV with configurable settings and exports figures and diagnostics. [Example 6](../examples/06_validation_and_uncertainty/README.md) compares normal references, bootstrap uncertainty and residual dependence.
 
-| Symbol | Meaning |
-|--------|---------|
-| `Δ` | reduced eigenvalue splitting, `|(λ₁−λ₂)/(λ₁+λ₂)|` |
-| `K` | reduced non-normality index (0 for an orthogonal reduced eigenbasis) |
-| `Kc(Δ)` | reduced transient-amplification threshold |
-| `R = K / Kc(Δ)` | normalized reduced non-normality ratio |
+## The analysis at a glance
 
-The closed form of the threshold is
-
+```text
+Multivariate observations                  Known discrete map
+          |                                         |
+          v                                         |
+Fit a one-step linear predictor                      |
+          |                                         |
+          +------------------+----------------------+
+                             v
+                   Extract response plane
+                             |
+                             v
+              R_A, R_sigma, directions, support
+                             |
+                             v
+                Assess stability and reliability
 ```
-Kc(Δ) = sqrt( sqrt(1 − Δ²) / (1 − sqrt(1 − Δ²)) ),   0 ≤ Δ < 1.
-```
 
-`R` is a control parameter: `R < 1` is below the reduced threshold, `R = 1` is
-the threshold, and `R > 1` is the amplification-prone regime. `R` is *not* a
-phenomenon — it controls whether the reduced dynamics can transiently amplify.
+The two ratios answer different scientific questions. Neither establishes causation, and neither replaces a check of the full fitted operator. The [conceptual guide](understanding_nndr.md) introduces both before the derivation.
 
-## Choosing a method
+## Technical reference
 
-- **M2 (optimization-based)** is the recommended default.
-- **M3 (commutator-based)** is an independent construction; running both and
-  comparing their planes (via `nndr.utils.principal_angle_deg`) is a useful
-  internal consistency check, especially for empirical data with no ground truth.
-- **M1 (eigenbasis-SVD)** is a transparent baseline; it is fragile when the
-  fitted operator's eigenvectors are unstable, and is mainly useful for
-  comparison.
+- [Scientific geometry](scientific_api.md): ordered directions, alignment and support.
+- [Estimation and adequacy](estimation_adequacy.md): regularization, gains, closure and predictive checks.
+- [Statistical controls](statistical_controls.md): surrogate models, residual tests, bootstrap and logarithm branches.
+- [Limitations](limitations.md): assumptions, identifiability, sampling and historical conventions.
+- [Migration from the original version](../THRESHOLD_MIGRATION.md): changes in scientific definitions.
 
-## API reference
-
-### High-level
-
-- `analyze(X, method="M2", ...)` → `NNDRResult`
-  Estimate the operator from `X` (shape `(N_channels, T_samples)`) and compute
-  diagnostics.
-- `rolling_analyze(X, window, step=1, method="M2", ...)` → `list[dict]`
-  Sliding-window diagnostics for non-stationary data.
-- `analyze_operator(A, method="M2", ...)` → `NNDRResult`
-  Diagnostics from a known operator, skipping estimation.
-- `fit_operator(X, lam=None, lambdas=None, shrinkage=0.0, ...)` → `np.ndarray`
-  Ridge-fit the one-step operator only.
-
-### `NNDRResult` fields
-
-`R`, `Delta`, `K`, `Kc`, `support`, `Q`, `r_hat`, `n_hat`, `method`, `ok`,
-`Fhat`, `extra`. The `summary()` method returns a one-line description.
-
-### Lower-level
-
-- `nndr.methods` — `method1_eigenbasis_svd`, `method2_optimization`,
-  `method3_commutator`, and the `METHODS` registry.
-- `nndr.reduce2d` — `compute_indices_from_Q`, `twoD_metrics_from_Gamma`,
-  `Kc_from_Delta`.
-- `nndr.ridge` — `ridge_fit_F`, `select_lambda_ridge`.
-- `nndr.observables` — `best_plane_corr`.
-- `nndr.utils` — `principal_angle_deg`, `spectral_radius`, and others.
-
-### Benchmarking (optional extra)
-
-- `nndr.benchmark` — `BenchConfig`, `run_benchmark`.
-- `nndr.plotting` — `plot_median_vs_x`, `plot_threshold_misclass_vs_x`,
-  `add_R_error_columns`, and others.
-
-Install with `pip install "nndr-toolkit[benchmark]"`.
+The current scientific API is 2.0.0. The published tag `2.0.0` has the earlier directory layout; the guides here refer to the current checkout. Follow documentation within the tag when reproducing that fixed snapshot.
