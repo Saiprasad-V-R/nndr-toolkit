@@ -1,5 +1,13 @@
 <p align="center">
-  <img src="docs/assets/NNDR_logo.png" alt="NNDR — Non-Normal Directional Response" width="900">
+  <picture>
+    <source media="(prefers-color-scheme: dark)"
+            srcset="docs/assets/NNDR_logo_dark.png">
+    <source media="(prefers-color-scheme: light)"
+            srcset="docs/assets/NNDR_logo_light.png">
+    <img src="docs/assets/NNDR_logo_light.png"
+         alt="NNDR — Non-Normal Directional Response"
+         width="900">
+  </picture>
 </p>
 
 # NNDR: Non-Normal Directional Response inference
@@ -10,7 +18,7 @@ V. R. Saiprasad, V. Troude, D. Sornette
 
 [![Release 2.0.0](https://img.shields.io/badge/release-2.0.0-blue.svg)](https://github.com/Saiprasad-V-R/nndr-toolkit/releases/tag/2.0.0) [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/) [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[Quick start](docs/quickstart.md) · [Examples](examples/README.md) · [User guide](docs/user_guide.md) · [API reference](docs/api_reference.md) · [Manuscript resources](manuscript/README.md)
+[Quick start](docs/quickstart.md) · [Examples](examples/README.md) · [User guide](docs/user_guide.md) · [API reference](docs/api_reference.md) · [Manuscript resources](https://github.com/Saiprasad-V-R/nndr-reproducibility)
 
 ## Why NNDR?
 
