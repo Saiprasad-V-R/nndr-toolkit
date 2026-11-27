@@ -44,6 +44,8 @@ print('M3 planted-plane error:', nndr.principal_angle(b.Q, Q_true))
 
 Fit once so both extraction methods use the same map. With real measurements, replace `X` with your data and omit the planted-plane error. `lam_rel=0.003` and `shrinkage=0.04` are illustrative settings, not validated recommendations for every dataset. Assess sensitivity, conditioning and chronological held-out skill. For a single method, `nndr.analyze(X, ...)` combines fitting and extraction.
 
+[Explore Example 3: network inference and node-level participation](../examples/03_inference_from_network_data/README.md).
+
 ## 3. I want to know where amplification is concentrated
 
 ```python
