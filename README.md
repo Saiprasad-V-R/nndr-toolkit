@@ -103,17 +103,7 @@ See the [documentation index](docs/index.md) for the complete technical referenc
 
 ## Manuscript reproducibility
 
-All paper-specific analysis resources are organized separately in [manuscript/](manuscript/README.md).
-
-| Resource | Scope |
-|---|---|
-| [Synthetic validations](manuscript/synthetic/README.md) | Revised real/complex threshold tests and high-dimensional finite-data recovery; not exact reproductions of all original numbered figures. |
-| [Seizure EEG](manuscript/seizure_eeg/representative/README.md) | Representative recording, archived figure data, plotting scripts and EDF numerical parity audit. |
-| [Uterine EHG](manuscript/uterine_ehg/README.md) | Dataset and methodology guidance. |
-| [Freezing of gait](manuscript/freezing_of_gait/README.md) | Dataset and supplementary methodology guidance. |
-| [Push-up recording](manuscript/pushup/README.md) | Original inertial data and revised methodology; no complete revised pipeline claimed. |
-
-The general toolkit examples are independent of these resources. External datasets retain their own licenses and attribution requirements.
+The [separate manuscript reproduction repository](https://github.com/Saiprasad-V-R/nndr-reproducibility) contains the revised figure calculations, archived numerical results, and empirical resources. This toolkit retains its [synthetic validation examples](manuscript/synthetic/README.md) and general-purpose tutorials. External datasets retain their own attribution and licensing terms.
 
 ## Versions, validation and citation
 

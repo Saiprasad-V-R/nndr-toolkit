@@ -85,7 +85,7 @@ $$
 
 The maximum absolute plane-observable correlation uses centered plane coordinates $z=Q^\top x$ and least-squares projection, $a_\star\propto C_{zz}^{\dagger}c_{zm}$. It measures alignment, not held-out predictive skill. A constant observable has undefined correlation. Largest principal angle between orthonormal planes is $\arccos\sigma_{\min}(Q^\top Q_\star)$; API units are degrees. Capture fraction is $\sigma_{\max}(\Gamma)/\sigma_{\max}(F)$ and relative closure error is $\|FQ-Q\Gamma\|_F/\|FQ\|_F$.
 
-The archived seizure figure uses distinct quantities: entropy support $\exp(-\sum_i p_i\log p_i)/N$ with $p_i=r_i^2/\|r\|_2^2$; and multiplier splitting $|\lambda_1-\lambda_2|/|\lambda_1+\lambda_2|$. These are not aliases for the default support or rate splitting. See [reproducibility](../manuscript/seizure_eeg/representative/README.md).
+The archived seizure figure uses distinct quantities: entropy support $\exp(-\sum_i p_i\log p_i)/N$ with $p_i=r_i^2/\|r\|_2^2$; and multiplier splitting $|\lambda_1-\lambda_2|/|\lambda_1+\lambda_2|$. These are not aliases for the default support or rate splitting. See [reproducibility](https://github.com/Saiprasad-V-R/nndr-reproducibility).
 
 ## 6. Dynamical response and checks
 

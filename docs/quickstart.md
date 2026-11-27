@@ -26,7 +26,7 @@ python -m pip install -e '.[dev]'
 python -m pip check
 ```
 
-If already inside a checkout, do not clone it again or switch branches. The current checkout contains the reorganized manuscript resources; the fixed tag `2.0.0` retains its earlier layout, so follow the documentation inside that tag for exact snapshot reproduction. For the validated Apple Silicon macOS/Python 3.9.6 environment, use `python -m pip install -e '.[dev]' -c requirements-validated-macos.txt`. This is one tested environment, not a universal dependency lock. MNE is needed only for the [manuscript EDF evaluation](../manuscript/seizure_eeg/representative/README.md).
+If already inside a checkout, do not clone it again or switch branches. The current checkout contains the reorganized manuscript resources; the fixed tag `2.0.0` retains its earlier layout, so follow the documentation inside that tag for exact snapshot reproduction. For the validated Apple Silicon macOS/Python 3.9.6 environment, use `python -m pip install -e '.[dev]' -c requirements-validated-macos.txt`. This is one tested environment, not a universal dependency lock. MNE is needed for the empirical EEG evaluation in the [reproduction repository](https://github.com/Saiprasad-V-R/nndr-reproducibility).
 
 ## 2. Understand one small system
 

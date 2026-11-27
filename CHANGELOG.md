@@ -4,7 +4,9 @@ Notable changes to NNDR. Published snapshots are retained; see the [release hist
 
 ## Unreleased — scientific usability redesign
 
-- Separate manuscript-specific data, scripts, validation figures and methodology under `manuscript/`.
+- Move the four empirical manuscript folders to the separate [reproduction repository](https://github.com/Saiprasad-V-R/nndr-reproducibility); retain toolkit algorithms, tutorials and synthetic validations.
+
+- Keep synthetic manuscript validations under `manuscript/` and link empirical resources in the separate reproduction repository.
 - Add six independently runnable, illustrated scientific tutorials covering stable amplification, real and complex spectra, network inference, time-varying dynamics, CSV analysis and uncertainty.
 - Standardize example figures using a shared publication-style plotting module and export PNG, PDF and SVG.
 - Reorganize the user guide, mathematical framework, API navigation and README; correct incompatible math macros.

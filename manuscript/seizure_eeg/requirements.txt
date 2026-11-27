@@ -1,2 +1,0 @@
-# Python 3.9-compatible EDF reader; install repository dev extra first.
-mne==1.8.0

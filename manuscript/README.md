@@ -2,7 +2,7 @@
 
 Companion to *Inferring Non-Normal Amplification Geometry from Multivariate Time Series*, V. R. Saiprasad, V. Troude and D. Sornette (2026). The [original preprint](https://arxiv.org/abs/2607.14786) and the revised toolkit use different threshold conventions; see the [migration notes](../THRESHOLD_MIGRATION.md).
 
-This repository is a reusable Python analysis package, with two self-contained synthetic validation experiments and one representative seizure EEG reproduction. The remaining empirical applications are documented below as methodological references, not as complete, independently reproduced revised pipelines. The original push-up recording is included. Large public datasets are not bundled.
+This toolkit retains two self-contained synthetic validation experiments. The representative empirical analyses and manuscript figure resources are in the [separate reproduction repository](https://github.com/Saiprasad-V-R/nndr-reproducibility).
 
 ## Software version
 
@@ -21,11 +21,10 @@ Run commands from the repository root in an activated Python environment (Python
 
 ```bash
 python -m pip install -e '.[dev]'
-python -m pip install -r manuscript/seizure_eeg/requirements.txt
 python -m pip check
 ```
 
-The EEG dependency is optional if running synthetic experiments only. For the independently validated macOS Apple Silicon environment (Python 3.9.6, NumPy 1.26.4, SciPy 1.13.1, Matplotlib 3.9.4 and MNE 1.8.0), use [requirements-validated-macos.txt](../requirements-validated-macos.txt) as a constraints file. That file records one environment, not a universal cross-platform lockfile. See the [package README](../README.md) and [scientific API](../docs/scientific_api.md) for analysis of new data.
+For the independently validated macOS Apple Silicon environment (Python 3.9.6, NumPy 1.26.4, SciPy 1.13.1, Matplotlib 3.9.4 and MNE 1.8.0), use [requirements-validated-macos.txt](../requirements-validated-macos.txt) as a constraints file. That file records one environment, not a universal cross-platform lockfile. See the [package README](../README.md) and [scientific API](../docs/scientific_api.md) for analysis of new data.
 
 ## Common revised methodology
 
@@ -77,37 +76,10 @@ A known two-dimensional block is embedded orthogonally in a stable 12-dimensiona
 
 Outputs: `recovery_trials.csv`, `recovery_summary.csv`, `recovery_summary.json`, `recovery_benchmark.png` and `.svg`. See [experiment details](synthetic/README_recovery.md). The original benchmark's historical M3 support convention is documented there; it is not the current directed-support API. Included preview figures were generated in the original validation runs; use the commands above to regenerate them locally.
 
-## 2. Representative seizure EEG (fully runnable)
+## Empirical manuscript resources
 
-**Data:** [CHB-MIT Scalp EEG Database, PhysioNet](https://physionet.org/content/chbmit/1.0.0/), recording `chb01/chb01_03.edf`, onset 2996 s and termination 3036 s. See [data attribution and license](seizure_eeg/DATA_LICENSE.md). The EDF is downloaded separately; the repository includes the derived plotting CSVs, original plotting scripts and reference PDFs.
-
-**Reproduce the approved main and supplementary Figure 12 from archived CSVs:**
-
-```bash
-python manuscript/seizure_eeg/representative/scripts/plot_figure12_RA_main.py
-python manuscript/seizure_eeg/representative/scripts/plot_figure12_chb01_03_Rsigma_supp.py
-```
-
-**Recompute from the original EDF and audit numerical parity:**
-
-```bash
-python manuscript/seizure_eeg/download_data.py --data-dir results/seizure/data
-python -W error::RuntimeWarning manuscript/seizure_eeg/representative/evaluate_edf.py \
-  --edf results/seizure/data/chb01_03.edf --out results/seizure/audit
-```
-
-The validated configuration uses a fixed core16 bipolar montage, 60 Hz notch (Q=30), fifth-order zero-phase Butterworth bandpass 0.5–15 Hz, anti-aliased polyphase resampling from 256 to 32 Hz, within-window centering, relative ridge 0.003 and shrinkage 0.05. Windows are 40 s long with 2 s step; 201 endpoints span -160 to +240 s relative to onset. M2 uses 12 restarts, 200 iterations and seed 0; M3 uses directed ordering. Only one window is entirely ictal. The figure-specific support is `exp(-sum(p_i log p_i))/N`, with `p_i = r_i^2/sum(r_j^2)`; splitting is `|lambda1-lambda2|/|lambda1+lambda2|`. Both figures retain the original four-panel style, raw traces and five-endpoint median overlays within valid segments. Original fixed plotting limits are retained; extreme values remain in the CSV.
-
-The Mac audit passed all nine numerical comparisons with no finite-mask mismatches, and waveform maximum absolute error 1.28e-11 microvolts. Valid ratio counts were 190/201 for M2 and 201/201 for M3. The largest absolute ratio error was 1.62e-6. See the [parity report](seizure_eeg/representative/validation/parity_report.json), [representative README](seizure_eeg/representative/README.md), and [main](seizure_eeg/representative/reference_figures/figure12_chb01_03_RA_main.pdf) / [supplementary](seizure_eeg/representative/reference_figures/figure12_chb01_03_Rsigma_supp.pdf) reference figures. The evaluator reconstructs the original analysis within specified numerical tolerances; it is not the unavailable byte-identical original evaluation script. This is a descriptive single-event analysis, not a seizure-prediction validation. Cohort-level reproduction is outside this public example.
-
-## 3. Additional empirical applications (methodological reference)
-
-- [Uterine EHG](uterine_ehg/README.md): data source and historical analysis settings.
-- [Freezing of gait](freezing_of_gait/README.md): data source and historical analysis settings.
-- [Push-up recording](pushup/README.md): included recording and revised methodology.
-
-These resources do not constitute independently verified complete revised empirical pipelines. The two synthetic validations above are newly designed checks of the revised framework; the older benchmark example in `synthetic/legacy_benchmark_example.py` is retained for historical context, not as a recommended new-user tutorial.
+The uterine EHG, seizure EEG, freezing-of-gait and push-up calculations, archived data, figures and reproduction guides are in [nndr-reproducibility](https://github.com/Saiprasad-V-R/nndr-reproducibility). The two synthetic validations above remain in this toolkit.
 
 ## Scope of validation and citation
 
-Use the [main README](../README.md) for citation and software license. Public data have their own licenses and recommended citations. The selected synthetic and representative EEG examples were independently executed in the validated environment. The project does not claim that every figure, cohort result or statistical calibration in the revised manuscript is reproduced by this release. Model adequacy, surrogate assumptions, sampling aliasing and preprocessing must be assessed for each new application.
+Use the [main README](../README.md) for citation and software license. Public data have their own licenses and recommended citations. The selected synthetic examples were independently executed in the validated environment. The project does not claim that every figure, cohort result or statistical calibration in the revised manuscript is reproduced by this release. Model adequacy, surrogate assumptions, sampling aliasing and preprocessing must be assessed for each new application.
