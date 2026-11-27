@@ -17,6 +17,10 @@ A stable system can still amplify a perturbation before it decays. NNDR estimate
 | Find a function, argument or output field | [API reference](api_reference.md) |
 | Reproduce results associated with the paper | [Manuscript resources](../manuscript/README.md) |
 
+## Illustrated examples
+
+Start with the [scientific example gallery](../examples/README.md). [Example 1](../examples/01_why_non_normality_matters/README.md) compares identical stable spectra with different finite-time responses.
+
 ## The analysis at a glance
 
 ```text

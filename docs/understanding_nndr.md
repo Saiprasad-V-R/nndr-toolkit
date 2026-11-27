@@ -39,6 +39,8 @@ for F in (np.diag([0.8, 0.5]), np.array([[0.8, 0.6], [0.0, 0.5]])):
 
 This example is deliberately chosen so the two criteria disagree. One-step norm amplification can occur without a delayed increase in the isotropic impulse variance-response kernel. A single generic "amplification threshold" would obscure that distinction.
 
+[Explore the computed four-panel figure and runnable example](../examples/01_why_non_normality_matters/README.md).
+
 ## 2. What is a response plane?
 
 For many observed variables, studying every direction in the full state space is difficult. NNDR seeks two orthogonal unit vectors: an input direction $n$ and a reaction direction $r$. In an ordered plane, the basis $Q=[r,n]$ gives the compressed map
