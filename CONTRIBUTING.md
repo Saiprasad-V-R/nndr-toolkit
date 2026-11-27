@@ -1,50 +1,39 @@
-# Contributing
+# Contributing to NNDR
 
-Thanks for your interest in improving NNDR.
+Please keep scientific changes, documentation changes and manuscript reproduction changes distinguishable in commits and pull requests.
 
 ## Development setup
 
 ```bash
 git clone https://github.com/Saiprasad-V-R/nndr-toolkit.git
 cd nndr-toolkit
-pip install -e ".[dev]"
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[dev]'
+python -m pip check
+python -m pytest -W error::RuntimeWarning
 ```
 
-## Running the tests
-
-```bash
-pytest
-```
-
-All tests live in `tests/` and should pass before a pull request is opened. If
-you add a feature, add a test that covers it.
+The project supports Python 3.9+. The included macOS constraints document one validated environment, not a cross-platform test matrix. MNE is optional and only needed for the EDF reproduction route.
 
 ## Project layout
 
-```
-src/nndr/
-  core.py        high-level inference API (analyze, rolling_analyze, ...)
-  methods.py     the three plane-extraction methods (M1, M2, M3)
-  reduce2d.py    reduced diagnostics (Delta, K, Kc, R)
-  ridge.py       operator estimation
-  observables.py plane-invariant correlation
-  simulate.py    VAR(1) simulation
-  generator.py   synthetic operator families (benchmarks)
-  benchmark.py   validation harness
-  plotting.py    figures from benchmark results
-  utils.py       linear-algebra helpers
-tests/           pytest suite
-examples/        runnable usage scripts
-```
+| Directory | Role |
+|---|---|
+| `src/nndr/` | Scientific implementation: high-level inference, extraction, thresholds, estimation, gains and statistical controls. |
+| `tests/` | Numerical and input-validation tests. |
+| `docs/` | Conceptual guides, mathematical definitions, API reference and limitations. |
+| `examples/` | Self-contained scientific use cases, executable scripts and illustrative reference figures. |
+| `manuscript/` | Paper-specific validation scripts, archived results, data and methodology. |
 
-## Style
+## Scientific and coding conventions
 
-- Keep the core inference path (`core.py`) dependency-light: NumPy only.
-- Match the paper's terminology: `R` is a parameter, "pseudo-critical" is an
-  adjective for the threshold/regime, methods are M1/M2/M3.
-- Add NumPy-style docstrings to public functions.
+- Use explicit `R_A`, `R_sigma`, `Delta_rate` and `beta` where applicable; do not confuse historical multiplier splitting with rate splitting. See the [mathematical framework](docs/mathematical_framework.md).
+- Distinguish discrete maps from continuous generators; document sampling and preprocessing. Reject inadmissible inputs instead of silently changing them.
+- Use public NNDR routines in examples, document any additional assumptions and preserve missing/invalid diagnostics. Include tests for new numerical behavior.
+- Keep numerical outputs reproducible with explicit settings and seeds. Follow the [figure style](examples/FIGURE_STYLE.md) and keep interpretation outside panels. Do not alter frozen manuscript references to match new estimates.
+- Update the [API reference](docs/api_reference.md) and relevant [limitations](docs/limitations.md) for changes in behavior. Use NumPy-style docstrings.
 
 ## Reporting issues
 
-Please include a minimal reproducing example and the versions of `nndr`, NumPy,
-and Python you are running.
+Provide a minimal reproducible script, expected and observed behavior, package version or commit, Python and dependency versions, and (if relevant) model or data dimensions, sampling interval and estimator settings. Do not upload confidential measurements.
